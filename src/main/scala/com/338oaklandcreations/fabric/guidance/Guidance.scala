@@ -19,18 +19,15 @@
 
 package com._338oaklandcreations.fabric.guidance
 
-import java.io.File
-
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
-import org.joda.time.{DateTimeZone, DateTime}
-import spray.can.Http
 import com.typesafe.config.ConfigFactory
-import scala.util.Properties.envOrElse
+import spray.can.Http
+
 import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.Properties.envOrElse
 
 object Guidance extends App {
 

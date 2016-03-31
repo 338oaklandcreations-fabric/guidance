@@ -19,15 +19,13 @@
 
 package com._338oaklandcreations.fabric.guidance
 
-import akka.util.ByteString
-import org.joda.time._
 import java.sql.Timestamp
-import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat, DateTimeFormatter}
 
-import scala.slick.driver.MySQLDriver.simple._
+import org.joda.time._
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter, ISODateTimeFormat}
 import spray.json._
 
-import scala.util.Properties._
+import scala.slick.driver.MySQLDriver.simple._
 
 object GuidanceTables {
 

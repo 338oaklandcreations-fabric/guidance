@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Who Won?</title>
+    <title>Fabric</title>
 
     <!-- Bootstrap -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="./css/who-won.css" rel="stylesheet">
+    <link href="./css/fabric.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -30,13 +30,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Who Won?</a>
+            <a class="navbar-brand" href="#">Fabric</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li class="active" id="entryPageNav"><a href="#entryPage">Entry </a></li>
                 <li id="reportPageNav"><a href="#reportPage">Report </a></li>
-                <li id="adminPageNav"><a href="#adminPage">Admin </a></li>
             </ul>
         </div>
     </div>
@@ -141,53 +140,6 @@
                 </table>
             </div>
         </div>
-    </div>
-</div>
-<div class="container-fluid">
-    <div class="list-group col-sm-4 hide" id='admin' style="margin-bottom: 0px;">
-        <li class="list-group-item" style="border: 0">
-            <div class="form-horizontal" id='resultsEntryTab'>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Sportsbook ID</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="resultsBookId">
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Score</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="selectedScore">
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">vs.</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="resultsOpposingBookId">
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Opposing Score</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="opposingScore">
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="list-group-item" style="border: 0">
-            <div class="btn-group col-md-offset-4">
-                <button type="submit" class="btn btn-default" id="resultsSubmit" style="width: 100px;">Submit</button>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-default" style="width: 50px; border: 0;"><span class='glyphicon glyphicon-refresh glyphicon-spin hide' id='resultsRunningQuery'></span></button>
-            </div>
-        </li>
-        <li class="list-group-item" style="border: 0">
-            <div class="alert alert-info" id="resultsSubmitResult" style="margin-bottom: 0px;">Please enter a game result</div>
-        </li>
     </div>
 </div>
 <div class="container">
