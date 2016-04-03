@@ -64,7 +64,7 @@ object GuidanceJsonProtocol extends DefaultJsonProtocol {
   }
 
   // Base case classes
-  implicit val baseRecord = jsonFormat4(BaseRecord)
+  implicit val baseRecord = jsonFormat2(BaseRecord)
 }
 
 class BaseTable(tag: Tag) extends Table[GuidanceTables.BaseRecord](tag, "baseRecord") {

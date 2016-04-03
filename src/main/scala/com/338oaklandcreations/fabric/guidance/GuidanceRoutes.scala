@@ -25,8 +25,9 @@ import org.slf4j.LoggerFactory
 import spray.http.MediaTypes._
 import spray.http.StatusCodes._
 import spray.http.{DateTime, HttpCookie}
-import spray.json._
 import spray.routing._
+
+import scala.util.{Failure, Success}
 
 class GuidanceServiceActor extends HttpServiceActor with ActorLogging {
 
@@ -57,15 +58,13 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   import system.dispatcher
 
   val guidanceData = system.actorOf(Props[GuidanceData], "guidanceData")
+  val machineryAPI = system.actorOf(Props[MachineryAPI], "machineryAPI")
 
   val routes =
-    postBet ~
-      bets ~
-      postGameResult ~
-      gamesRequest ~
-      missingGamesRequest ~
-      admin ~
-      saveTicket ~
+    getHostCPU ~
+      getHostMemory ~
+      getHeartbeat ~
+      getHostStatistics ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -105,99 +104,65 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   val UserKey = "WHOWON_USER"
   val ResponseTextHeader = "{\"responseText\": "
 
-  def postBet = post {
-    path("bets") {
-      cookie("WHOWON_SESSION") { sessionId => {
-        cookie("WHOWON_USER") { username => {
-          respondWithMediaType(`application/json`) { ctx =>
-            val newBet = ctx.request.entity.data.asString.parseJson.convertTo[Bet]
-            val future = guidanceData ? newBet
-            future onSuccess {
-              case BetSubmitted => ctx.complete(200, ResponseTextHeader + "\"Bet Submitted\"}")
-              case BetReplaced => ctx.complete(200, ResponseTextHeader + "\"Bet Replaced\"}")
-              case UnknownPlayer => ctx.complete(400, ResponseTextHeader + "\"Unknown Player\"}")
-              case UnknownBookId => ctx.complete(400, ResponseTextHeader + "\"Unknown Book Id\"}")
-            }
-          }
-        }
-        }
-      }}
-    }
-  }
-
-  def bets = get {
-    pathPrefix("bets" / """.*""".r / IntNumber) { (userName, year) =>
+  def getHostMemory = get {
+    path("hostMemory") {
       respondWithMediaType(`application/json`) { ctx =>
-        val future = guidanceData ? BetsRequest(userName, year)
-        future onSuccess {
-          case Bets(list) => ctx.complete(list.toJson.toString)
-          case UnknownPlayer => ctx.complete(400, ResponseTextHeader + "\"Unknown Player\"}")
+        val future = machineryAPI ? ctx.request
+        future onComplete {
+          case Success(success) => success match {
+            case history: String => ctx.complete(history)
+            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+          }
+          case Failure(failure) => ctx.complete(400, failure.toString)
         }
       }
     }
   }
 
-  def saveTicket = post {
-    path("ticket") {
-      cookie("WHOWON_SESSION") { sessionId => {
-        cookie("WHOWON_USER") { username => {
-          handleRejections(authorizationRejection) {
-            authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-              respondWithMediaType(`application/json`) { ctx =>
-                val future = guidanceData ? TicketImage(username.content, ctx.request.entity.data.toByteString)
-                future onSuccess {
-                  case location: String => ctx.complete(location)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Error storing image\"}")
-                }
-              }}
-          }}
-        }}
-      }} ~ getFromResource("webapp/login.html")
-    }
-
-  def postGameResult = post {
-    path("games" / IntNumber) { (year) =>
-      cookie("WHOWON_SESSION") { sessionId => {
-        cookie("WHOWON_USER") { username => {
-          respondWithMediaType(`application/json`) { ctx =>
-            val newResult = ctx.request.entity.data.asString.parseJson.convertTo[GameResult]
-            val future = guidanceData ? newResult
-            future onSuccess {
-              case ResultSubmitted => ctx.complete(ResponseTextHeader + "\"Submitted\"}")
-              case _ => ctx.complete(500, ResponseTextHeader + "\"Problem Submitting\"}")
-            }
-          }
-        }
-        }}
-      }}
-  }
-
-  def gamesRequest = get {
-    path("games" / IntNumber) { (year) =>
+  def getHostCPU = get {
+    path("hostCPU") {
       respondWithMediaType(`application/json`) { ctx =>
-        val future = guidanceData ? GameResultsRequest(year)
-        future onSuccess {
-          case GameResults(list) => {
-            ctx.complete(list.toJson.toString)
+        val future = machineryAPI ? ctx.request
+        future onComplete {
+          case Success(success) => success match {
+            case history: String => ctx.complete(history)
+            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
           }
+          case Failure(failure) => ctx.complete(400, failure.toString)
         }
       }
     }
   }
 
-  def missingGamesRequest = get {
-    path("games" / IntNumber / "missing") { (year) =>
+  def getHeartbeat = get {
+    path("heartbeat") {
       respondWithMediaType(`application/json`) { ctx =>
-        val future = guidanceData ? MissingGameResultsRequest(year)
-        future onSuccess {
-          case BookIdsResults(list) => {
-            ctx.complete(list.toJson.toString)
+        val future = machineryAPI ? ctx.request
+        future onComplete {
+          case Success(success) => success match {
+            case history: String => ctx.complete(history)
+            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
           }
+          case Failure(failure) => ctx.complete(400, failure.toString)
         }
       }
     }
   }
 
+  def getHostStatistics = get {
+    path("hostStatistics") {
+      respondWithMediaType(`application/json`) { ctx =>
+        val future = machineryAPI ? ctx.request
+        future onComplete {
+          case Success(success) => success match {
+            case history: String => ctx.complete(history)
+            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+          }
+          case Failure(failure) => ctx.complete(400, failure.toString)
+        }
+      }
+    }
+  }
   def admin = get {
     path("admin") {
       cookie("WHOWON_SESSION") { sessionId => {
@@ -214,6 +179,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
     }
   }
 
+
   def login =
     post {
       path("login") {
@@ -222,11 +188,11 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             authenticate(authenticateUser(inputName, inputPassword)) { authentication =>
               setCookie(HttpCookie(SessionKey, content = authentication.token, expires = Some(expiration))) {
                 setCookie(HttpCookie(UserKey, content = inputName, expires = Some(expiration))) { ctx =>
-                  val future = guidanceData ? PlayerIdRequest(inputName)
-                  future onSuccess {
-                    case x: Player => ctx.complete("")
-                    case x: UnknownPlayer => ctx.complete(400, "Unknown Player")
-                  }
+                  val future = guidanceData ! ""// PlayerIdRequest(inputName)
+                  //future onSuccess {
+                  //  case x: Player => ctx.complete("")
+                  //  case x: UnknownPlayer => ctx.complete(400, "Unknown Player")
+                 // }
                 }
               }
             }

@@ -39,19 +39,14 @@ class MachineryAPI extends Actor with ActorLogging {
   val logger = LoggerFactory.getLogger(getClass)
 
   val backendServer = {
-    scala.util.Properties.envOrElse("FABRIC_MACHINERY_URL", "http://***")
-  }
-
-  def atMost(x: HttpRequest): Duration = {
-    if (x.uri.path.toString == "/load") 5 minutes
-    else 30 seconds
+    scala.util.Properties.envOrElse("FABRIC_MACHINERY_URL", "http://localhost:8111")
   }
 
   def receive = {
     case x: HttpRequest =>
       logger.info (x.method + " " + x.uri.path.toString + " " + x.entity.data)
       val request = HttpRequest(x.method, backendServer + x.uri.path.toString, entity = x.entity)
-      val response = Await.result ((IO(Http) ? request).mapTo[HttpResponse], atMost(x)) ~> unmarshal[String]
+      val response = Await.result ((IO(Http) ? request).mapTo[HttpResponse], 3 seconds) ~> unmarshal[String]
       sender ! response
       logger.info ("Response: " + response.getClass + " " + response.length)
     case x => sender ! "UNKNOWN REQUEST TYPE: " + x.toString
