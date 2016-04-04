@@ -39,8 +39,7 @@ class GuidanceServiceActor extends HttpServiceActor with ActorLogging {
 
   def receive = runRoute(
     guidanceRoutes.routes ~
-      get {getFromResourceDirectory("webapp")} ~
-      get {getFromResource("webapp/index.html")})
+      get {getFromResourceDirectory("webapp")})
 
 }
 
@@ -61,17 +60,14 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   val machineryAPI = system.actorOf(Props[MachineryAPI], "machineryAPI")
 
   val routes =
-    getHostCPU ~
+    mainPage ~
+      getHostCPU ~
       getHostMemory ~
       getHeartbeat ~
       getHostStatistics ~
       login
 
   val authenticationRejection = RejectionHandler {
-    case AuthenticationRejection(message) :: _ => complete(400, message)
-  }
-
-  val authorizationRejection = RejectionHandler {
     case AuthenticationRejection(message) :: _ => getFromResource("webapp/login.html")
   }
 
@@ -100,8 +96,8 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   val keyLifespanMillis = 120000 * 1000 // 2000 minutes
   val expiration = DateTime.now + keyLifespanMillis
-  val SessionKey = "WHOWON_SESSION"
-  val UserKey = "WHOWON_USER"
+  val SessionKey = "FABRIC_GUIDANCE_SESSION"
+  val UserKey = "FABRIC_GUIDANCE_USER"
   val ResponseTextHeader = "{\"responseText\": "
 
   def getHostMemory = get {
@@ -163,42 +159,31 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       }
     }
   }
-  def admin = get {
-    path("admin") {
-      cookie("WHOWON_SESSION") { sessionId => {
-        cookie("WHOWON_USER") { username => {
-          handleRejections(authorizationRejection) {
-            authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-              getFromResource("webapp/admin.html")
-            }
-          }
-        }
-        }
+  def mainPage = get {
+    path("") {
+      cookie(SessionKey) { sessionId =>
+//        cookie(UserKey) { username =>
+          //authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            getFromResource("webapp/main.html")
+          //}
+        } ~ getFromResource("webapp/main.html")
       }
-      } ~ getFromResource("webapp/login.html")
-    }
+//    }
   }
-
-
-  def login =
-    post {
-      path("login") {
-        formFields('inputName, 'inputPassword) { (inputName, inputPassword) =>
-          handleRejections(authenticationRejection) {
-            authenticate(authenticateUser(inputName, inputPassword)) { authentication =>
-              setCookie(HttpCookie(SessionKey, content = authentication.token, expires = Some(expiration))) {
-                setCookie(HttpCookie(UserKey, content = inputName, expires = Some(expiration))) { ctx =>
-                  val future = guidanceData ! ""// PlayerIdRequest(inputName)
-                  //future onSuccess {
-                  //  case x: Player => ctx.complete("")
-                  //  case x: UnknownPlayer => ctx.complete(400, "Unknown Player")
-                 // }
-                }
+  def login = post {
+    path("login") {
+      formFields('inputName, 'inputPassword) { (inputName, inputPassword) =>
+        handleRejections(authenticationRejection) {
+          authenticate(authenticateUser(inputName, inputPassword)) { authentication =>
+            setCookie(HttpCookie(SessionKey, content = authentication.token, expires = Some(expiration))) {
+              setCookie(HttpCookie(UserKey, content = inputName, expires = Some(expiration))) { ctx =>
+                ctx.complete("")
               }
             }
           }
         }
       }
     }
+  }
 
 }

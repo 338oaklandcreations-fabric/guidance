@@ -22,6 +22,8 @@ $(document).ready(function() {
     $('.dynamicsparkline').sparkline.defaults.common.lineColor = 'black';
     $('.dynamicsparkline').sparkline.defaults.common.height = '30px';
     $('.dynamicsparkline').sparkline.defaults.common.width = '300px';
+    $('.dynamicsparkline').sparkline.defaults.common.chartRangeMin = '0.0';
+    $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
     $('.dynamicsparkline').sparkline();
 
     function updateMetrics() {
@@ -38,7 +40,8 @@ $(document).ready(function() {
 			cache: false
 		}).done (function (heartbeat) {
             $('#pattern').html(heartbeat.currentPattern);
-            $('#heartbeatTimestamp').html(heartbeat.timestamp);
+            var timestamp = moment(heartbeat.timestamp);
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('h:mm a z'));
 		});
     }
 
