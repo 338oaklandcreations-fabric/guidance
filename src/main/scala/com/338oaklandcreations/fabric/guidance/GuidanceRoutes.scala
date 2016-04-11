@@ -65,6 +65,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       getHostMemory ~
       getHeartbeat ~
       getHostStatistics ~
+      ledPower ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -102,74 +103,121 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   def getHostMemory = get {
     path("hostMemory") {
-      respondWithMediaType(`application/json`) { ctx =>
-        val future = machineryAPI ? ctx.request
-        future onComplete {
-          case Success(success) => success match {
-            case history: String => ctx.complete(history)
-            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            respondWithMediaType(`application/json`) { ctx =>
+              val future = machineryAPI ? ctx.request
+              future onComplete {
+                case Success(success) => success match {
+                  case history: String => ctx.complete(history)
+                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+                }
+                case Failure(failure) => ctx.complete(400, failure.toString)
+              }
+            }
           }
-          case Failure(failure) => ctx.complete(400, failure.toString)
         }
-      }
+      } ~ getFromResource("webapp/login.html")
     }
   }
 
   def getHostCPU = get {
     path("hostCPU") {
-      respondWithMediaType(`application/json`) { ctx =>
-        val future = machineryAPI ? ctx.request
-        future onComplete {
-          case Success(success) => success match {
-            case history: String => ctx.complete(history)
-            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            respondWithMediaType(`application/json`) { ctx =>
+              val future = machineryAPI ? ctx.request
+              future onComplete {
+                case Success(success) => success match {
+                  case history: String => ctx.complete(history)
+                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+                }
+                case Failure(failure) => ctx.complete(400, failure.toString)
+              }
+            }
           }
-          case Failure(failure) => ctx.complete(400, failure.toString)
         }
-      }
+      } ~ getFromResource("webapp/login.html")
     }
   }
 
   def getHeartbeat = get {
     path("heartbeat") {
-      respondWithMediaType(`application/json`) { ctx =>
-        val future = machineryAPI ? ctx.request
-        future onComplete {
-          case Success(success) => success match {
-            case history: String => ctx.complete(history)
-            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            respondWithMediaType(`application/json`) { ctx =>
+              val future = machineryAPI ? ctx.request
+              future onComplete {
+                case Success(success) => success match {
+                  case history: String => ctx.complete(history)
+                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+                }
+                case Failure(failure) => ctx.complete(400, failure.toString)
+              }
+            }
           }
-          case Failure(failure) => ctx.complete(400, failure.toString)
         }
-      }
+      } ~ getFromResource("webapp/login.html")
     }
   }
 
   def getHostStatistics = get {
     path("hostStatistics") {
-      respondWithMediaType(`application/json`) { ctx =>
-        val future = machineryAPI ? ctx.request
-        future onComplete {
-          case Success(success) => success match {
-            case history: String => ctx.complete(history)
-            case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            respondWithMediaType(`application/json`) { ctx =>
+              val future = machineryAPI ? ctx.request
+              future onComplete {
+                case Success(success) => success match {
+                  case history: String => ctx.complete(history)
+                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+                }
+                case Failure(failure) => ctx.complete(400, failure.toString)
+              }
+            }
           }
-          case Failure(failure) => ctx.complete(400, failure.toString)
         }
-      }
+      } ~ getFromResource("webapp/login.html")
     }
   }
-  def mainPage = get {
-    path("") {
-      cookie(SessionKey) { sessionId =>
-//        cookie(UserKey) { username =>
-          //authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            getFromResource("webapp/main.html")
-          //}
-        } ~ getFromResource("webapp/main.html")
-      }
-//    }
+
+  def ledPower = post {
+    path("ledPower" / """(on|off)""".r) { (select) =>
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            respondWithMediaType(`application/json`) { ctx =>
+              val future = machineryAPI ? ctx.request
+              future onComplete {
+                case Success(success) => success match {
+                  case history: String => ctx.complete(history)
+                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
+                }
+                case Failure(failure) => ctx.complete(400, failure.toString)
+              }
+            }
+          }
+        }
+      } ~ getFromResource("webapp/login.html")
+    }
   }
+
+  def mainPage = get {
+    path("" | "main.html") {
+      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
+        cookie("FABRIC_GUIDANCE_USER") { username =>
+          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
+            getFromResource("webapp/main.html")
+          }
+        }
+      } ~ getFromResource("webapp/login.html")
+    }
+  }
+
   def login = post {
     path("login") {
       formFields('inputName, 'inputPassword) { (inputName, inputPassword) =>

@@ -39,7 +39,7 @@ $(document).ready(function() {
 			url: '/heartbeat',
 			cache: false
 		}).done (function (heartbeat) {
-            $('#pattern').html(heartbeat.currentPattern);
+            $('#pattern').html(heartbeat.patternName);
             var timestamp = moment(heartbeat.timestamp);
             $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('h:mm a z'));
 		});
