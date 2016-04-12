@@ -118,7 +118,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             }
           }
         }
-      } ~ getFromResource("webapp/login.html")
+      } ~ complete(401, "")
     }
   }
 
@@ -139,7 +139,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             }
           }
         }
-      } ~ getFromResource("webapp/login.html")
+      } ~ complete(401, "")
     }
   }
 
@@ -160,7 +160,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             }
           }
         }
-      } ~ getFromResource("webapp/login.html")
+      } ~ complete(401, "")
     }
   }
 
@@ -181,7 +181,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             }
           }
         }
-      } ~ getFromResource("webapp/login.html")
+      } ~ complete(401, "")
     }
   }
 
@@ -202,7 +202,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
             }
           }
         }
-      } ~ getFromResource("webapp/login.html")
+      } ~ complete(401, "")
     }
   }
 

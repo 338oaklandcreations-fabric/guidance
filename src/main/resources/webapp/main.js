@@ -19,30 +19,38 @@
 
 $(document).ready(function() {
 
+    var http = location.protocol;
+    var slashes = http.concat("//");
+    var host = slashes.concat(window.location.host);
+
     $('.dynamicsparkline').sparkline.defaults.common.lineColor = 'black';
     $('.dynamicsparkline').sparkline.defaults.common.height = '30px';
     $('.dynamicsparkline').sparkline.defaults.common.width = '300px';
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMin = '0.0';
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
-    $('.dynamicsparkline').sparkline();
 
     function updateMetrics() {
 		$.ajax({
 			url: '/hostStatistics',
 			cache: false
-		}).done (function (statistics) {
+		}).success (function (statistics) {
             $('#hostMemorySparkline.dynamicsparkline').sparkline(statistics.memoryHistory);
             $('#hostCpuSparkline.dynamicsparkline').sparkline(statistics.cpuHistory);
-            $('#startTime').html(statistics.startTime);
-		});
-		$.ajax({
+            var timestamp = moment(statistics.startTime);
+            $('#startTime').html(timestamp.tz('America/Los_Angeles').format('yyyyMMdd h:mm a'));
+		}).error (function (xhr, ajaxOptions, thrownError) {
+            window.location.replace(host);
+        });
+        $.ajax({
 			url: '/heartbeat',
 			cache: false
-		}).done (function (heartbeat) {
+		}).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
             var timestamp = moment(heartbeat.timestamp);
-            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('h:mm a z'));
-		});
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('yyyyMMdd h:mm a'));
+		}).error (function (xhr, ajaxOptions, thrownError) {
+            window.location.replace(host);
+        });
     }
 
     updateMetrics();

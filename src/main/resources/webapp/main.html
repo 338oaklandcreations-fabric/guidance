@@ -9,6 +9,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="./css/fabric.css" rel="stylesheet">
+    <link href="./css/jquery.sparkline.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -52,6 +53,57 @@
                     <label class="col-sm-4 control-label">Heartbeat Timestamp</label>
                     <label class="col-sm-8 control-label" style="text-align: center;" id="heartbeatTimestamp"></label>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">LED Power</label>
+                    <div class="col-sm-8">
+                        <div class="btn-group btn-group-justified" role="group">
+                            <button type="button" class="btn btn-default" style="width: 120px;">On</button>
+                            <button type="button" class="btn btn-default active" style="width: 120px;">Off</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Pattern</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="patternName">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Red</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="redLevel">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Green</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="greenLevel">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Blue</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="blueLevel">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Speed</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="speedLevel">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Intensity</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="intensityLevel">
+                        </select>
+                    </div>
+                </div>
             </div>
         </li>
     </div>
@@ -63,7 +115,7 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./main.js"></script>
-<script type="text/javascript" src="./js/jquery.sparkline.min.js"></script>
+<script type="text/javascript" src="./js/jquery.sparkline.js"></script>
 <script type="text/javascript" src="./js/moment.min.js"></script>
 <script type="text/javascript" src="./js/moment-timezone-with-data.js"></script>
 </body>
