@@ -29,6 +29,24 @@ $(document).ready(function() {
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMin = '0.0';
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
 
+    $('#ledOn').click(function() {
+        $('#ledOff').removeClass('active');
+        $('#ledOn').addClass('active');
+        $.ajax({
+          url: "/ledPower/on",
+          method: "POST",
+        });
+    });
+
+    $('#ledOff').click(function() {
+        $('#ledOn').removeClass('active');
+        $('#ledOff').addClass('active');
+        $.ajax({
+          url: "/ledPower/off",
+          method: "POST",
+        });
+    });
+
     function updateMetrics() {
 		$.ajax({
 			url: '/hostStatistics',
@@ -37,7 +55,7 @@ $(document).ready(function() {
             $('#hostMemorySparkline.dynamicsparkline').sparkline(statistics.memoryHistory);
             $('#hostCpuSparkline.dynamicsparkline').sparkline(statistics.cpuHistory);
             var timestamp = moment(statistics.startTime);
-            $('#startTime').html(timestamp.tz('America/Los_Angeles').format('yyyyMMdd h:mm a'));
+            $('#startTime').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
         });
@@ -47,7 +65,7 @@ $(document).ready(function() {
 		}).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
             var timestamp = moment(heartbeat.timestamp);
-            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('yyyyMMdd h:mm a'));
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
         });
