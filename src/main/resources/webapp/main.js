@@ -37,7 +37,6 @@ $(document).ready(function() {
           method: "POST",
         });
     });
-
     $('#ledOff').click(function() {
         $('#ledOn').removeClass('active');
         $('#ledOff').addClass('active');
@@ -46,8 +45,24 @@ $(document).ready(function() {
           method: "POST",
         });
     });
+    $('#speed').slider();
+    $('#intensity').slider();
 
-    function updateMetrics() {
+    var RGBChange = function() {
+        $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
+    };
+
+    var r = $('#R').slider()
+            .on('slide', RGBChange)
+            .data('slider');
+    var g = $('#G').slider()
+            .on('slide', RGBChange)
+            .data('slider');
+    var b = $('#B').slider()
+            .on('slide', RGBChange)
+            .data('slider');
+
+	function updateMetrics() {
 		$.ajax({
 			url: '/hostStatistics',
 			cache: false

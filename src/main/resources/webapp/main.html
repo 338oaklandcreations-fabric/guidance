@@ -8,6 +8,7 @@
     <!-- Bootstrap -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.0/css/bootstrap-slider.css" rel="stylesheet">
     <link href="./css/fabric.css" rel="stylesheet">
     <link href="./css/jquery.sparkline.css" rel="stylesheet">
 </head>
@@ -55,53 +56,48 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">LED Power</label>
-                    <div class="col-sm-8">
-                        <div class="btn-group btn-group-justified" role="group">
-                            <button type="button" class="btn btn-default" style="width: 120px;" id="ledOn">On</button>
-                            <button type="button" class="btn btn-default active" style="width: 120px;" id="ledOff">Off</button>
+                    <div class="col-sm-8 text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default" style="width: 100px;" id="ledOn">On</button>
+                            <button type="button" class="btn btn-default active" style="width: 100px;" id="ledOff">Off</button>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Pattern</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 text-center">
                         <select class="form-control" id="patternName">
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Red</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="redLevel">
-                        </select>
+                    <div class="col-sm-8 text-center">
+                        <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="RC" id="R" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Green</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="greenLevel">
-                        </select>
+                    <div class="col-sm-8 text-center">
+                        <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="GC" id="G" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Blue</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="blueLevel">
-                        </select>
+                    <div class="col-sm-8 text-center">
+                        <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="BC" id="B" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Speed</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="speedLevel">
-                        </select>
+                    <div class="col-sm-8 text-center">
+                        <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="ex1Slider" id="speed" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Intensity</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="intensityLevel">
-                        </select>
+                    <div class="col-sm-8 text-center">
+                        <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="ex1Slider" id="intensity" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
             </div>
@@ -114,6 +110,7 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.0/bootstrap-slider.js"></script>
 <script type="text/javascript" src="./main.js"></script>
 <script type="text/javascript" src="./js/jquery.sparkline.js"></script>
 <script type="text/javascript" src="./js/moment.min.js"></script>
