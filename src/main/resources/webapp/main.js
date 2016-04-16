@@ -30,11 +30,16 @@ $(document).ready(function() {
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
 
     $('#ledOn').click(function() {
-        $('#ledOff').removeClass('active');
-        $('#ledOn').addClass('active');
         $.ajax({
           url: "/ledPower/on",
           method: "POST",
+		}).success (function (ledResult) {
+		    if (ledResult.result == 1) {
+                $('#ledOff').removeClass('active');
+                $('#ledOn').addClass('active');
+            }
+		}).error (function (xhr, ajaxOptions, thrownError) {
+            window.location.replace(host);
         });
     });
     $('#ledOff').click(function() {
@@ -43,6 +48,13 @@ $(document).ready(function() {
         $.ajax({
           url: "/ledPower/off",
           method: "POST",
+		}).success (function (ledResult) {
+		    if (ledResult.result == 1) {
+                $('#ledOff').removeClass('active');
+                $('#ledOn').addClass('active');
+            }
+		}).error (function (xhr, ajaxOptions, thrownError) {
+            window.location.replace(host);
         });
     });
     $('#speed').slider();

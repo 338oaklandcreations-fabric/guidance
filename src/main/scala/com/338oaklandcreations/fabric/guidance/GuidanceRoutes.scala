@@ -23,7 +23,6 @@ import akka.actor._
 import akka.pattern.ask
 import org.slf4j.LoggerFactory
 import spray.http.MediaTypes._
-import spray.http.StatusCodes._
 import spray.http.{DateTime, HttpCookie}
 import spray.routing._
 
@@ -45,11 +44,7 @@ class GuidanceServiceActor extends HttpServiceActor with ActorLogging {
 
 trait GuidanceRoutes extends HttpService with UserAuthentication {
 
-  import java.net.InetAddress
-
   import UserAuthentication._
-  import GuidanceTables._
-  import GuidanceJsonProtocol._
 
   val logger = LoggerFactory.getLogger(getClass)
   val system = ActorSystem("whoWonSystem")
@@ -72,137 +67,99 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
     case AuthenticationRejection(message) :: _ => getFromResource("webapp/login.html")
   }
 
-  val secureCookies: Boolean = {
-    // Don't require HTTPS if running in development
-    val hostname = InetAddress.getLocalHost.getHostName
-    hostname != "localhost" && !hostname.contains("pro")
-  }
-
-  def redirectToHttps: Directive0 = {
-    requestUri.flatMap { uri =>
-      redirect(uri.copy(scheme = "https"), MovedPermanently)
-    }
-  }
-
-  val isHttpsRequest: RequestContext => Boolean = { ctx =>
-    (ctx.request.uri.scheme == "https" || ctx.request.headers.exists(h => h.is("x-forwarded-proto") && h.value == "https")) && secureCookies
-  }
-
-  def enforceHttps: Directive0 = {
-    extract(isHttpsRequest).flatMap(
-      if (_) pass
-      else redirectToHttps
-    )
-  }
+  val cookies = cookie("FABRIC_GUIDANCE_SESSION") & cookie("FABRIC_GUIDANCE_USER") & respondWithMediaType(`application/json`)
+  def authenticateCookies(sessionId: HttpCookie, username: HttpCookie) = authenticate(authenticateSessionId(sessionId.content, username.content))
 
   val keyLifespanMillis = 120000 * 1000 // 2000 minutes
   val expiration = DateTime.now + keyLifespanMillis
   val SessionKey = "FABRIC_GUIDANCE_SESSION"
   val UserKey = "FABRIC_GUIDANCE_USER"
   val ResponseTextHeader = "{\"responseText\": "
+  val UnauthorizedRequestString = "Unauthorized Request"
+  val UnknownCommandResponseString = ResponseTextHeader + "\"Unknown command results\"}"
 
   def getHostMemory = get {
     path("hostMemory") {
-      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
-        cookie("FABRIC_GUIDANCE_USER") { username =>
-          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            respondWithMediaType(`application/json`) { ctx =>
-              val future = machineryAPI ? ctx.request
-              future onComplete {
-                case Success(success) => success match {
-                  case history: String => ctx.complete(history)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
-                }
-                case Failure(failure) => ctx.complete(400, failure.toString)
-              }
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          val future = machineryAPI ? ctx.request
+          future onComplete {
+            case Success(success) => success match {
+              case history: String => ctx.complete(history)
+              case _ => ctx.complete(400, UnknownCommandResponseString)
             }
+            case Failure(failure) => ctx.complete(400, failure.toString)
           }
         }
-      } ~ complete(401, "")
+      } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
   def getHostCPU = get {
     path("hostCPU") {
-      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
-        cookie("FABRIC_GUIDANCE_USER") { username =>
-          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            respondWithMediaType(`application/json`) { ctx =>
-              val future = machineryAPI ? ctx.request
-              future onComplete {
-                case Success(success) => success match {
-                  case history: String => ctx.complete(history)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
-                }
-                case Failure(failure) => ctx.complete(400, failure.toString)
-              }
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          val future = machineryAPI ? ctx.request
+          future onComplete {
+            case Success(success) => success match {
+              case history: String => ctx.complete(history)
+              case _ => ctx.complete(400, UnknownCommandResponseString)
             }
+            case Failure(failure) => ctx.complete(400, failure.toString)
           }
         }
-      } ~ complete(401, "")
+      } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
   def getHeartbeat = get {
     path("heartbeat") {
-      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
-        cookie("FABRIC_GUIDANCE_USER") { username =>
-          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            respondWithMediaType(`application/json`) { ctx =>
-              val future = machineryAPI ? ctx.request
-              future onComplete {
-                case Success(success) => success match {
-                  case history: String => ctx.complete(history)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
-                }
-                case Failure(failure) => ctx.complete(400, failure.toString)
-              }
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          val future = machineryAPI ? ctx.request
+          future onComplete {
+            case Success(success) => success match {
+              case history: String => ctx.complete(history)
+              case _ => ctx.complete(400, UnknownCommandResponseString)
             }
+            case Failure(failure) => ctx.complete(400, failure.toString)
           }
         }
-      } ~ complete(401, "")
+      } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
   def getHostStatistics = get {
     path("hostStatistics") {
-      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
-        cookie("FABRIC_GUIDANCE_USER") { username =>
-          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            respondWithMediaType(`application/json`) { ctx =>
-              val future = machineryAPI ? ctx.request
-              future onComplete {
-                case Success(success) => success match {
-                  case history: String => ctx.complete(history)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
-                }
-                case Failure(failure) => ctx.complete(400, failure.toString)
-              }
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          val future = machineryAPI ? ctx.request
+          future onComplete {
+            case Success(success) => success match {
+              case history: String => ctx.complete(history)
+              case _ => ctx.complete(400, UnknownCommandResponseString)
             }
+            case Failure(failure) => ctx.complete(400, failure.toString)
           }
         }
-      } ~ complete(401, "")
+      } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
   def ledPower = post {
     path("ledPower" / """(on|off)""".r) { (select) =>
-      cookie("FABRIC_GUIDANCE_SESSION") { sessionId =>
-        cookie("FABRIC_GUIDANCE_USER") { username =>
-          authenticate(authenticateSessionId(sessionId.content, username.content)) { authentication =>
-            respondWithMediaType(`application/json`) { ctx =>
-              val future = machineryAPI ? ctx.request
-              future onComplete {
-                case Success(success) => success match {
-                  case history: String => ctx.complete(history)
-                  case _ => ctx.complete(400, ResponseTextHeader + "\"Unknown command results\"}")
-                }
-                case Failure(failure) => ctx.complete(400, failure.toString)
-              }
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          val future = machineryAPI ? ctx.request
+          future onComplete {
+            case Success(success) => success match {
+              case history: String => ctx.complete(history)
+              case _ => ctx.complete(400, UnknownCommandResponseString)
             }
+            case Failure(failure) => ctx.complete(400, failure.toString)
           }
         }
-      } ~ complete(401, "")
+      } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
