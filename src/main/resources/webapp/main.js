@@ -59,6 +59,15 @@ $(document).ready(function() {
             data: JSON.stringify(patternSelect),
             contentType: "application/json"
         }).done(function(results) {
+            if (results.result == 0) {
+                $('#submitResult').addClass('alert-success');
+                $('#submitResult').removeClass('alert-danger');
+                $('#submitResult').html('<strong>Submission Successful</strong>');
+            } else {
+                $('#submitResult').removeClass('alert-success');
+                $('#submitResult').addClass('alert-danger');
+                $('#submitResult').html('<strong>Submission Failed</strong>');
+            }
             updateHeartbeat();
         });
     });
@@ -131,6 +140,18 @@ $(document).ready(function() {
             $('#startTime').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
+        });
+		$.ajax({
+			url: '/version/ledController',
+			cache: false
+		}).success (function (version) {
+            $('#ledControllerVersion').html('Build: ' + version.versionId + ', Build Time: ' + version.buildTime);
+        });
+		$.ajax({
+			url: '/version/server',
+			cache: false
+		}).success (function (version) {
+            $('#serverVersion').html('Build: ' + version.version + ', Build Time: ' + version.builtAt);
         });
         updateHeartbeat();
     };

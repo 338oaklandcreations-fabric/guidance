@@ -63,6 +63,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       ledPower ~
       patternNames ~
       patternUpdate ~
+      versions ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -153,6 +154,16 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   def patternUpdate = post {
     path("pattern") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def versions = get {
+    pathPrefix("version") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
           forwardRequest(ctx)
