@@ -47,7 +47,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   import UserAuthentication._
 
   val logger = LoggerFactory.getLogger(getClass)
-  val system = ActorSystem("whoWonSystem")
+  val system = ActorSystem("guidanceSystem")
 
   import system.dispatcher
 
@@ -56,18 +56,20 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   val routes =
     mainPage ~
-      getHostCPU ~
-      getHostMemory ~
-      getHeartbeat ~
-      getHostStatistics ~
+      hostCPU ~
+      hostMemory ~
+      heartbeat ~
+      hostStatistics ~
       ledPower ~
+      patternNames ~
+      patternUpdate ~
       login
 
   val authenticationRejection = RejectionHandler {
     case AuthenticationRejection(message) :: _ => getFromResource("webapp/login.html")
   }
 
-  val cookies = cookie("FABRIC_GUIDANCE_SESSION") & cookie("FABRIC_GUIDANCE_USER") & respondWithMediaType(`application/json`)
+  def cookies = cookie("FABRIC_GUIDANCE_SESSION") & cookie("FABRIC_GUIDANCE_USER") & respondWithMediaType(`application/json`)
   def authenticateCookies(sessionId: HttpCookie, username: HttpCookie) = authenticate(authenticateSessionId(sessionId.content, username.content))
 
   val keyLifespanMillis = 120000 * 1000 // 2000 minutes
@@ -78,69 +80,52 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   val UnauthorizedRequestString = "Unauthorized Request"
   val UnknownCommandResponseString = ResponseTextHeader + "\"Unknown command results\"}"
 
-  def getHostMemory = get {
-    path("hostMemory") {
-      cookies { (sessionId, username) =>
-        authenticateCookies(sessionId, username) { authenticated => ctx =>
-          val future = machineryAPI ? ctx.request
-          future onComplete {
-            case Success(success) => success match {
-              case history: String => ctx.complete(history)
-              case _ => ctx.complete(400, UnknownCommandResponseString)
-            }
-            case Failure(failure) => ctx.complete(400, failure.toString)
-          }
-        }
-      } ~ complete(401, UnauthorizedRequestString)
+  def forwardRequest(ctx: RequestContext) = {
+    val future = machineryAPI ? ctx.request
+    future onComplete {
+      case Success(success) => success match {
+        case history: String => ctx.complete(history)
+        case _ => ctx.complete(400, UnknownCommandResponseString)
+      }
+      case Failure(failure) => ctx.complete(400, failure.toString)
     }
   }
 
-  def getHostCPU = get {
+  def hostCPU = get {
     path("hostCPU") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
-          val future = machineryAPI ? ctx.request
-          future onComplete {
-            case Success(success) => success match {
-              case history: String => ctx.complete(history)
-              case _ => ctx.complete(400, UnknownCommandResponseString)
-            }
-            case Failure(failure) => ctx.complete(400, failure.toString)
-          }
+          forwardRequest(ctx)
         }
       } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
-  def getHeartbeat = get {
+  def hostMemory = get {
+    path("hostMemory") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def heartbeat = get {
     path("heartbeat") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
-          val future = machineryAPI ? ctx.request
-          future onComplete {
-            case Success(success) => success match {
-              case history: String => ctx.complete(history)
-              case _ => ctx.complete(400, UnknownCommandResponseString)
-            }
-            case Failure(failure) => ctx.complete(400, failure.toString)
-          }
+          forwardRequest(ctx)
         }
       } ~ complete(401, UnauthorizedRequestString)
     }
   }
 
-  def getHostStatistics = get {
+  def hostStatistics = get {
     path("hostStatistics") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
-          val future = machineryAPI ? ctx.request
-          future onComplete {
-            case Success(success) => success match {
-              case history: String => ctx.complete(history)
-              case _ => ctx.complete(400, UnknownCommandResponseString)
-            }
-            case Failure(failure) => ctx.complete(400, failure.toString)
-          }
+          forwardRequest(ctx)
         }
       } ~ complete(401, UnauthorizedRequestString)
     }
@@ -150,14 +135,27 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
     path("ledPower" / """(on|off)""".r) { (select) =>
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
-          val future = machineryAPI ? ctx.request
-          future onComplete {
-            case Success(success) => success match {
-              case history: String => ctx.complete(history)
-              case _ => ctx.complete(400, UnknownCommandResponseString)
-            }
-            case Failure(failure) => ctx.complete(400, failure.toString)
-          }
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def patternNames = get {
+    path("pattern" / "names") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def patternUpdate = post {
+    path("pattern") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
         }
       } ~ complete(401, UnauthorizedRequestString)
     }

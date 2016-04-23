@@ -44,11 +44,11 @@ class MachineryAPI extends Actor with ActorLogging {
 
   def receive = {
     case x: HttpRequest =>
-      logger.info (x.method + " " + x.uri.path.toString + " " + x.entity.data)
+      logger.debug ("Request: " + x.method + " " + x.uri.path.toString + " " + x.entity.data)
       val request = HttpRequest(x.method, backendServer + x.uri.path.toString, entity = x.entity)
       val response = Await.result ((IO(Http) ? request).mapTo[HttpResponse], 3 seconds) ~> unmarshal[String]
       sender ! response
-      logger.info ("Response: " + response.getClass + " " + response.length)
+      logger.debug ("Response: " + response.getClass + " " + response.length)
     case x => sender ! "UNKNOWN REQUEST TYPE: " + x.toString
   }
 }

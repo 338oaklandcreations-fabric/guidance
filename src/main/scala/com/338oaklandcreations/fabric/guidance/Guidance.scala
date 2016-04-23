@@ -33,7 +33,7 @@ object Guidance extends App {
 
   def doMain = {
 
-    implicit val system = ActorSystem()
+    implicit val system = ActorSystem("guidanceSystem")
     implicit val timeout = Timeout(DurationInt(5).seconds)
 
     val config = ConfigFactory.load

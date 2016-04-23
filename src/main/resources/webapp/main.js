@@ -29,6 +29,40 @@ $(document).ready(function() {
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMin = '0.0';
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
 
+    $('#controlNav').click(function() {
+        $('#controlPage').removeClass('hide');
+        $('#statusPage').addClass('hide');
+        $('#controlNav').addClass('active');
+        $('#statusNav').removeClass('active');
+        updateControl();
+    });
+
+    $('#statusNav').click(function() {
+        $('#controlPage').addClass('hide');
+        $('#statusPage').removeClass('hide');
+        $('#controlNav').removeClass('active');
+        $('#statusNav').addClass('active');
+        updateStatus();
+    });
+
+    $('#patternSubmit').click(function() {
+        var patternName = Number($('#patternName').val().split(' ')[0]);
+        var rValue = r.getValue();
+        var gValue = g.getValue();
+        var bValue = b.getValue();
+        var speedValue = speed.getValue();
+        var intensityValue = intensity.getValue();
+        var patternSelect = {"id": patternName, "red": rValue, "green": gValue, "blue": bValue, "speed": speedValue, "intensity": intensityValue};
+        $.ajax({
+            type: "POST",
+            url: '/pattern',
+            data: JSON.stringify(patternSelect),
+            contentType: "application/json"
+        }).done(function(results) {
+            updateHeartbeat();
+        });
+    });
+
     $('#ledOn').click(function() {
         $.ajax({
           url: "/ledPower/on",
@@ -57,9 +91,6 @@ $(document).ready(function() {
             window.location.replace(host);
         });
     });
-    $('#speed').slider();
-    $('#intensity').slider();
-
     var RGBChange = function() {
         $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
     };
@@ -73,8 +104,23 @@ $(document).ready(function() {
     var b = $('#B').slider()
             .on('slide', RGBChange)
             .data('slider');
+    var speed = $('#speed').slider().data('slider');
+    var intensity = $('#intensity').slider().data('slider');
 
-	function updateMetrics() {
+    function updateHeartbeat() {
+        $.ajax({
+			url: '/heartbeat',
+			cache: false
+		}).success (function (heartbeat) {
+            $('#pattern').html(heartbeat.patternName);
+            var timestamp = moment(heartbeat.timestamp);
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+		}).error (function (xhr, ajaxOptions, thrownError) {
+            window.location.replace(host);
+        });
+    };
+
+	function updateStatus() {
 		$.ajax({
 			url: '/hostStatistics',
 			cache: false
@@ -86,18 +132,25 @@ $(document).ready(function() {
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
         });
+        updateHeartbeat();
+    };
+
+    function updateControl() {
         $.ajax({
-			url: '/heartbeat',
+			url: '/pattern/names',
 			cache: false
-		}).success (function (heartbeat) {
-            $('#pattern').html(heartbeat.patternName);
-            var timestamp = moment(heartbeat.timestamp);
-            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+		}).success (function (patternNames) {
+            $.each(patternNames.names, function(key, name) {
+                $('#patternName').append(
+                    '<option value =\"' + name.split(' ')[0] + '\">' + name + '</option>'
+                );
+            });
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
         });
+        updateHeartbeat();
     }
 
-    updateMetrics();
+    updateControl();
 
 });
