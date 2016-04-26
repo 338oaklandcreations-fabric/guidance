@@ -73,7 +73,7 @@ class MachineryAPI extends Actor with ActorLogging {
   def receive = {
     case x: HttpRequest =>
       logger.debug ("Request: " + x.method + " " + x.uri.path.toString + " " + x.entity.data)
-      val request = HttpRequest(x.method, backendServer + x.uri.path.toString, entity = x.entity)
+      val request = HttpRequest(x.method, backendServer + x.uri.path.toString, x.headers.filter(_.name == "Cookie"), entity = x.entity)
       val response = Await.result ((hostConnector ? request).mapTo[HttpResponse], 3 seconds) ~> unmarshal[String]
       sender ! response
       logger.debug ("Response: " + response.getClass + " " + response.length)

@@ -59,14 +59,16 @@ $(document).ready(function() {
             data: JSON.stringify(patternSelect),
             contentType: "application/json"
         }).done(function(results) {
+            var timestamp = moment(new Date());
+            var timestampString = timestamp.tz('America/Los_Angeles').format('h:mm a');
             if (results.result == 0) {
                 $('#submitResult').addClass('alert-success');
                 $('#submitResult').removeClass('alert-danger');
-                $('#submitResult').html('<strong>Submission Successful</strong>');
+                $('#submitResult').html('<strong>' + timestampString + ' (Pacific):</strong> Submission Successful');
             } else {
                 $('#submitResult').removeClass('alert-success');
                 $('#submitResult').addClass('alert-danger');
-                $('#submitResult').html('<strong>Submission Failed</strong>');
+                $('#submitResult').html('<strong>' + timestampString + ' (Pacific):</strong> Submission Failed');
             }
             updateHeartbeat();
         });
@@ -138,6 +140,12 @@ $(document).ready(function() {
             $('#hostCpuSparkline.dynamicsparkline').sparkline(statistics.cpuHistory);
             var timestamp = moment(statistics.startTime);
             $('#startTime').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+            var lumenessenceLogs = "Warn: " + statistics.concerning[0].warn + ", Error: " + statistics.concerning[0].error + ", Fatal: " + statistics.concerning[0].fatal;
+            var serverLogs = "Warn: " + statistics.concerning[1].warn + ", Error: " + statistics.concerning[1].error + ", Fatal: " + statistics.concerning[1].fatal;
+            var opcLogs = "Warn: " + statistics.concerning[2].warn + ", Error: " + statistics.concerning[2].error + ", Fatal: " + statistics.concerning[2].fatal;
+            $('#serverLogs').html(serverLogs);
+            $('#ledControllerLogs').html(lumenessenceLogs);
+            $('#opcLogs').html(opcLogs);
 		}).error (function (xhr, ajaxOptions, thrownError) {
             window.location.replace(host);
         });
@@ -145,13 +153,14 @@ $(document).ready(function() {
 			url: '/version/ledController',
 			cache: false
 		}).success (function (version) {
-            $('#ledControllerVersion').html('Build: ' + version.versionId + ', Build Time: ' + version.buildTime);
+            $('#ledControllerVersion').html('Ver: ' + version.versionId + ', Built: ' + version.buildTime);
         });
 		$.ajax({
 			url: '/version/server',
 			cache: false
 		}).success (function (version) {
-            $('#serverVersion').html('Build: ' + version.version + ', Build Time: ' + version.builtAt);
+		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
+            $('#serverVersion').html('Ver: ' + version.version + ', Built: ' + versionTime);
         });
         updateHeartbeat();
     };
