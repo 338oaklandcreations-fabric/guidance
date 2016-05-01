@@ -83,8 +83,6 @@ $(document).ready(function() {
                 $('#ledOff').removeClass('active');
                 $('#ledOn').addClass('active');
             }
-		}).error (function (xhr, ajaxOptions, thrownError) {
-            window.location.replace(host);
         });
     });
     $('#ledOff').click(function() {
@@ -98,8 +96,6 @@ $(document).ready(function() {
                 $('#ledOff').removeClass('active');
                 $('#ledOn').addClass('active');
             }
-		}).error (function (xhr, ajaxOptions, thrownError) {
-            window.location.replace(host);
         });
     });
     var RGBChange = function() {
@@ -126,8 +122,6 @@ $(document).ready(function() {
             $('#pattern').html(heartbeat.patternName);
             var timestamp = moment(heartbeat.timestamp);
             $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
-		}).error (function (xhr, ajaxOptions, thrownError) {
-            window.location.replace(host);
         });
     };
 
@@ -153,14 +147,16 @@ $(document).ready(function() {
 			url: '/version/ledController',
 			cache: false
 		}).success (function (version) {
-            $('#ledControllerVersion').html('Ver: ' + version.versionId + ', Built: ' + version.buildTime);
+            $('#ledControllerVersion').html(version.versionId);
+            $('#ledControllerBuildTime').html(version.buildTime);
         });
 		$.ajax({
 			url: '/version/server',
 			cache: false
 		}).success (function (version) {
 		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
-            $('#serverVersion').html('Ver: ' + version.version + ', Built: ' + versionTime);
+            $('#serverVersion').html(version.version);
+            $('#serverBuildTime').html(versionTime);
         });
         updateHeartbeat();
     };
@@ -175,8 +171,6 @@ $(document).ready(function() {
                     '<option value =\"' + name.split(' ')[0] + '\">' + name + '</option>'
                 );
             });
-		}).error (function (xhr, ajaxOptions, thrownError) {
-            window.location.replace(host);
         });
         updateHeartbeat();
     }
