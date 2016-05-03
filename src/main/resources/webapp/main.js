@@ -166,9 +166,10 @@ $(document).ready(function() {
 			url: '/pattern/names',
 			cache: false
 		}).success (function (patternNames) {
+            $('#patternName').empty();
             $.each(patternNames.names, function(key, name) {
                 $('#patternName').append(
-                    '<option value =\"' + name.split(' ')[0] + '\">' + name + '</option>'
+                    '<option value =\"' + name.split(' ')[0] + '\" style=\"text-align: center;\">' + name + '</option>'
                 );
             });
         });
