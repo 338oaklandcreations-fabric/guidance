@@ -45,7 +45,21 @@ $(document).ready(function() {
         updateStatus();
     });
 
+    $('#patternName').change(function() {
+        checkSubmit();
+    });
+
+    function checkSubmit() {
+        if ($("input#autoSubmit")[0].checked) {
+           submitPattern();
+        }
+    }
+
     $('#patternSubmit').click(function() {
+        submitPattern();
+    });
+
+    function submitPattern() {
         var patternName = Number($('#patternName').val().split(' ')[0]);
         var rValue = r.getValue();
         var gValue = g.getValue();
@@ -72,7 +86,7 @@ $(document).ready(function() {
             }
             updateHeartbeat();
         });
-    });
+    };
 
     $('#ledOn').click(function() {
         $.ajax({
@@ -104,15 +118,22 @@ $(document).ready(function() {
 
     var r = $('#R').slider()
             .on('slide', RGBChange)
+            .on('slideStop', checkSubmit)
             .data('slider');
     var g = $('#G').slider()
             .on('slide', RGBChange)
+            .on('slideStop', checkSubmit)
             .data('slider');
     var b = $('#B').slider()
             .on('slide', RGBChange)
+            .on('slideStop', checkSubmit)
             .data('slider');
-    var speed = $('#speed').slider().data('slider');
-    var intensity = $('#intensity').slider().data('slider');
+    var speed = $('#speed').slider()
+            .on('slideStop', checkSubmit)
+            .data('slider');
+    var intensity = $('#intensity').slider()
+            .on('slideStop', checkSubmit)
+            .data('slider');
 
     function updateHeartbeat() {
         $.ajax({
@@ -120,6 +141,11 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
+            r.setValue(heartbeat.red);
+            g.setValue(heartbeat.green);
+            b.setValue(heartbeat.blue);
+            speed.setValue(heartbeat.speed);
+            intensity.setValue(heartbeat.intensity);
             var timestamp = moment(heartbeat.timestamp);
             $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
         });
@@ -169,7 +195,7 @@ $(document).ready(function() {
             $('#patternName').empty();
             $.each(patternNames.names, function(key, name) {
                 $('#patternName').append(
-                    '<option value =\"' + name.split(' ')[0] + '\" style=\"text-align: center;\">' + name + '</option>'
+                    '<option value =\"' + name.split(' ')[0] + '\">' + name.split(' ')[1]  + '</option>'
                 );
             });
         });

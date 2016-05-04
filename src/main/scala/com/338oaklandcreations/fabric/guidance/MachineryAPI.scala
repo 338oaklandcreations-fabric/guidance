@@ -35,7 +35,13 @@ import spray.io.ClientSSLEngineProvider
 import scala.concurrent._
 import scala.concurrent.duration._
 
+object MachineryAPI {
+  val CallTimeout = 10 seconds
+}
+
 class MachineryAPI extends Actor with ActorLogging {
+
+  import MachineryAPI._
 
   implicit val system = ActorSystem()
   implicit val timeout: Timeout = Timeout(5 minutes)
@@ -66,7 +72,7 @@ class MachineryAPI extends Actor with ActorLogging {
   val backendHost = scala.util.Properties.envOrElse("FABRIC_MACHINERY_HOST", "localhost")
   val backendServer = "https://" + backendHost + ":" + backendServerPort
 
-  val hostConnector = Await.result (IO(Http) ? Http.HostConnectorSetup(backendHost, port=backendServerPort, sslEncryption = true), 3 seconds) match {
+  val hostConnector = Await.result (IO(Http) ? Http.HostConnectorSetup(backendHost, port=backendServerPort, sslEncryption = true), CallTimeout) match {
     case Http.HostConnectorInfo(hostConnector, _) => hostConnector
   }
 
@@ -74,7 +80,7 @@ class MachineryAPI extends Actor with ActorLogging {
     case x: HttpRequest =>
       logger.debug ("Request: " + x.method + " " + x.uri.path.toString + " " + x.entity.data)
       val request = HttpRequest(x.method, backendServer + x.uri.path.toString, x.headers.filter(_.name == "Cookie"), entity = x.entity)
-      val response = Await.result ((hostConnector ? request).mapTo[HttpResponse], 3 seconds) ~> unmarshal[String]
+      val response = Await.result ((hostConnector ? request).mapTo[HttpResponse], CallTimeout) ~> unmarshal[String]
       sender ! response
       logger.debug ("Response: " + response.getClass + " " + response.length)
     case x => sender ! "UNKNOWN REQUEST TYPE: " + x.toString
