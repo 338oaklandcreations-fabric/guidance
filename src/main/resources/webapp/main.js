@@ -178,14 +178,14 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (version) {
             $('#ledControllerVersion').html(version.versionId);
-		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
+		    var versionTime = moment(version.buildTime).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
             $('#ledControllerBuildTime').html(versionTime);
         });
 		$.ajax({
 			url: '/version/server',
 			cache: false
 		}).success (function (version) {
-		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
+		    var versionTime = moment(version.builtAt).format('YYYY-MM-DD h:mm a')
             $('#serverVersion').html(version.version);
             $('#serverBuildTime').html(versionTime);
         });
