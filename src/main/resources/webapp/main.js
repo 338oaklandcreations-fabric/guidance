@@ -60,7 +60,7 @@ $(document).ready(function() {
     });
 
     function submitPattern() {
-        var patternName = Number($('#patternName').val().split(' ')[0]);
+        var patternName = Number($('#patternName').val().split('-')[0]);
         var rValue = r.getValue();
         var gValue = g.getValue();
         var bValue = b.getValue();
@@ -97,6 +97,7 @@ $(document).ready(function() {
                 $('#ledOff').removeClass('active');
                 $('#ledOn').addClass('active');
             }
+            updateHeartbeat();
         });
     });
     $('#ledOff').click(function() {
@@ -110,6 +111,7 @@ $(document).ready(function() {
                 $('#ledOff').removeClass('active');
                 $('#ledOn').addClass('active');
             }
+            updateHeartbeat();
         });
     });
     var RGBChange = function() {
@@ -141,11 +143,13 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
-            r.setValue(heartbeat.red);
-            g.setValue(heartbeat.green);
-            b.setValue(heartbeat.blue);
-            speed.setValue(heartbeat.speed);
-            intensity.setValue(heartbeat.intensity);
+            if (heartbeat.patternName != 'Off') {
+                r.setValue(heartbeat.red);
+                g.setValue(heartbeat.green);
+                b.setValue(heartbeat.blue);
+                speed.setValue(heartbeat.speed);
+                intensity.setValue(heartbeat.intensity);
+            }
             var timestamp = moment(heartbeat.timestamp);
             $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
         });
@@ -174,7 +178,8 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (version) {
             $('#ledControllerVersion').html(version.versionId);
-            $('#ledControllerBuildTime').html(version.buildTime);
+		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
+            $('#ledControllerBuildTime').html(versionTime);
         });
 		$.ajax({
 			url: '/version/server',
@@ -195,7 +200,7 @@ $(document).ready(function() {
             $('#patternName').empty();
             $.each(patternNames.names, function(key, name) {
                 $('#patternName').append(
-                    '<option value =\"' + name.split(' ')[0] + '\">' + name.split(' ')[1]  + '</option>'
+                    '<option value =\"' + name.split('-')[0] + '\">' + name.split('-')[1]  + '</option>'
                 );
             });
         });
