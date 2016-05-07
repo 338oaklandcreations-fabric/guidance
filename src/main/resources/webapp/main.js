@@ -157,6 +157,8 @@ $(document).ready(function() {
                 b.setValue(heartbeat.blue);
                 speed.setValue(heartbeat.speed);
                 intensity.setValue(heartbeat.intensity);
+                $('#ledOff').removeClass('active');
+                $('#ledOn').addClass('active');
             } else {
                 $('#ledOn').removeClass('active');
                 $('#ledOff').addClass('active');
@@ -189,14 +191,14 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (version) {
             $('#ledControllerVersion').html(version.versionId);
-		    var versionTime = moment(version.buildTime).format('YYYY-MM-DD h:mm a')
+		    var versionTime = moment.tz(version.builtAt, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
             $('#ledControllerBuildTime').html(versionTime);
         });
 		$.ajax({
 			url: '/version/server',
 			cache: false
 		}).success (function (version) {
-		    var versionTime = moment(version.builtAt).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a')
+		    var versionTime = moment.tz(version.builtAt, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
             $('#serverVersion').html(version.version);
             $('#serverBuildTime').html(versionTime);
         });
