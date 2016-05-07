@@ -122,6 +122,36 @@ $(document).ready(function() {
             updateHeartbeat();
         });
     });
+    $('#logInfo').click(function() {
+        $.ajax({
+          url: "/logLevel/INFO",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#logInfo').addClass('active');
+            $('#logDebug').removeClass('active');
+            $('#logWarn').removeClass('active');
+        });
+    });
+    $('#logDebug').click(function() {
+        $.ajax({
+          url: "/logLevel/DEBUG",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#logInfo').removeClass('active');
+            $('#logDebug').addClass('active');
+            $('#logWarn').removeClass('active');
+        });
+    });
+    $('#logWarn').click(function() {
+        $.ajax({
+          url: "/logLevel/WARN",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#logInfo').removeClass('active');
+            $('#logDebug').removeClass('active');
+            $('#logWarn').addClass('active');
+        });
+    });
     var RGBChange = function() {
         $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
     };

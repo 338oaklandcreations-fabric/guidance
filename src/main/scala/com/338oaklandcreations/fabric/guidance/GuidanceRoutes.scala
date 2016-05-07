@@ -64,6 +64,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       patternNames ~
       patternUpdate ~
       versions ~
+      logLevel ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -166,6 +167,23 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
     pathPrefix("version") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def logLevel = post {
+    path("logLevel" / """(DEBUG|INFO|WARN)""".r) { (level) =>
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          import ch.qos.logback.classic.Level
+          val root = org.slf4j.LoggerFactory.getLogger("root").asInstanceOf[ch.qos.logback.classic.Logger]
+          level match {
+            case "DEBUG" => root.setLevel(Level.DEBUG)
+            case "INFO" => root.setLevel(Level.INFO)
+            case "WARN" => root.setLevel(Level.WARN)
+          }
           forwardRequest(ctx)
         }
       } ~ complete(401, UnauthorizedRequestString)
