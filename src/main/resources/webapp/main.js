@@ -60,13 +60,21 @@ $(document).ready(function() {
     });
 
     function submitPattern() {
-        var patternName = Number($('#patternName').val().split('-')[0]);
+        var patternId = Number($('#patternName').val().split('-')[0]);
+        var patternName = Number($('#patternName').val().split('-')[1]);
+        if (patternName == "Starfield") {
+            r.setValue(255);
+            g.setValue(255);
+            b.setValue(255);
+            speed.setValue(10);
+            intensity.setValue(255);
+        }
         var rValue = r.getValue();
         var gValue = g.getValue();
         var bValue = b.getValue();
         var speedValue = speed.getValue();
         var intensityValue = intensity.getValue();
-        var patternSelect = {"id": patternName, "red": rValue, "green": gValue, "blue": bValue, "speed": speedValue, "intensity": intensityValue};
+        var patternSelect = {"id": patternId, "red": rValue, "green": gValue, "blue": bValue, "speed": speedValue, "intensity": intensityValue};
         $.ajax({
             type: "POST",
             url: '/pattern',
@@ -149,6 +157,9 @@ $(document).ready(function() {
                 b.setValue(heartbeat.blue);
                 speed.setValue(heartbeat.speed);
                 intensity.setValue(heartbeat.intensity);
+            } else {
+                $('#ledOn').removeClass('active');
+                $('#ledOff').addClass('active');
             }
             var timestamp = moment(heartbeat.timestamp);
             $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
