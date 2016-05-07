@@ -61,7 +61,7 @@ $(document).ready(function() {
 
     function submitPattern() {
         var patternId = Number($('#patternName').val().split('-')[0]);
-        var patternName = Number($('#patternName').val().split('-')[1]);
+        var patternName = $('#patternName').val().split('-')[1];
         if (patternName == "Starfield") {
             r.setValue(255);
             g.setValue(255);
@@ -191,7 +191,7 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (version) {
             $('#ledControllerVersion').html(version.versionId);
-		    var versionTime = moment.tz(version.builtAt, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
+		    var versionTime = moment.tz(version.buildTime, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
             $('#ledControllerBuildTime').html(versionTime);
         });
 		$.ajax({
@@ -213,7 +213,7 @@ $(document).ready(function() {
             $('#patternName').empty();
             $.each(patternNames.names, function(key, name) {
                 $('#patternName').append(
-                    '<option value =\"' + name.split('-')[0] + '\">' + name.split('-')[1]  + '</option>'
+                    '<option value =\"' + name + '\">' + name.split('-')[1]  + '</option>'
                 );
             });
         });
