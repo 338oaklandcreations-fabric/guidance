@@ -33,66 +33,66 @@
 
 </nav>
 <div class="container-fluid">
-    <div class="list-group col-sm-4" id="controlPage">
+    <div class="list-group col-sm-4 col-xs-12" id="controlPage">
         <li class="list-group-item" style="border: 0">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Current Pattern</label>
-                    <label class="col-sm-8 control-label" style="text-align: center;" id="pattern"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Current Pattern</label>
+                    <label class="col-sm-8 col-xs-6 control-label" style="text-align: center;" id="pattern"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">LED Power</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">LED Power</label>
+                    <div class="col-sm-8 col-xs-6 text-center">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-default" style="width: 100px;" id="ledOn">On</button>
-                            <button type="button" class="btn btn-default active" style="width: 100px;" id="ledOff">Off</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 75px;" id="ledOn">On</button>
+                            <button type="button" class="btn btn-default btn-md active" style="width: 75px;" id="ledOff">Off</button>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Pattern</label>
-                    <div class="col-md-offset-2 col-sm-4">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Pattern</label>
+                    <div class="col-md-offset-2 col-sm-4 col-xs-6">
                         <select class="form-control" id="patternName">
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Red</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Red</label>
+                    <div class="col-sm-8 col-xs-7 text-center">
                         <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="RC" id="R" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Green</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Green</label>
+                    <div class="col-sm-8 col-xs-7 text-center">
                         <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="GC" id="G" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Blue</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Blue</label>
+                    <div class="col-sm-8 col-xs-7 text-center">
                         <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="BC" id="B" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Speed</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Speed</label>
+                    <div class="col-sm-8 col-xs-7 text-center">
                         <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="ex1Slider" id="speed" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Intensity</label>
-                    <div class="col-sm-8 text-center">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Intensity</label>
+                    <div class="col-sm-8 col-xs-7 text-center">
                         <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="128" data-slider-id="ex1Slider" id="intensity" data-slider-tooltip="hide" data-slider-handle="round" />
                     </div>
                 </div>
             </div>
         </li>
         <li class="list-group-item" style="border: 0">
-            <div class="btn-group col-md-offset-4">
+            <div class="btn-group col-md-offset-4 col-xs-offset-4">
                 <button type="submit" class="btn btn-default" id="patternSubmit" style="width: 100px;">Submit</button>
             </div>
-            <div class="btn-group checkbox col-md-offset-1">
+            <div class="btn-group checkbox col-md-offset-1 col-xs-offset-1">
                 <label><input type="checkbox" id="autoSubmit" value="" checked="checked">Auto</label>
             </div>
             <div class="btn-group">
@@ -111,60 +111,60 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">CPU</label>
                     <div class="col-sm-8">
-                        <span class="dynamicsparkline" id="hostCpuSparkline">Loading..</span>
+                        <span class="dynamicsparkline" id="hostCpuSparkline">Loading...</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Memory</label>
                     <div class="col-sm-8">
-                        <span class="dynamicsparkline" id="hostMemorySparkline">Loading..</span>
+                        <span class="dynamicsparkline" id="hostMemorySparkline">Loading...</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Log Level</label>
                     <div class="col-sm-8 text-center">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-default" style="width: 100px;" id="logDebug">Debug</button>
-                            <button type="button" class="btn btn-default active" style="width: 100px;" id="logInfo">Info</button>
+                            <button type="button" class="btn btn-default active" style="width: 100px;" id="logDebug">Debug</button>
+                            <button type="button" class="btn btn-default" style="width: 100px;" id="logInfo">Info</button>
                             <button type="button" class="btn btn-default" style="width: 100px;" id="logWarn">Warn</button>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Start Time</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="startTime"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Start Time</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="startTime"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Last Heartbeat</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="heartbeatTimestamp"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Last Heartbeat</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="heartbeatTimestamp"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Machinery Version</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="serverVersion"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Machinery Version</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="serverVersion"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Machinery Build</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="serverBuildTime"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Machinery Build</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="serverBuildTime"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Lumenessence Version</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="ledControllerVersion"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Lumenessence Version</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="ledControllerVersion"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Lumenessence Build Time</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="ledControllerBuildTime"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Lumenessence Build Time</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="ledControllerBuildTime"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Machinery Logs</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="serverLogs"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Machinery Logs</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="serverLogs"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Lumenessence Logs</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="ledControllerLogs"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Lumenessence Logs</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="ledControllerLogs"></label>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">OPC Logs</label>
-                    <label class="col-sm-8 control-label" style="text-align: center; font-weight: normal;" id="opcLogs"></label>
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">OPC Logs</label>
+                    <label class="col-sm-8 col-xs-7 control-label" style="text-align: center; font-weight: normal;" id="opcLogs"></label>
                 </div>
             </div>
         </li>

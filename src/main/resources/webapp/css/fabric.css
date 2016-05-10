@@ -29,6 +29,11 @@
 
 body { padding-top: 70px; }
 
+.slider.slider-horizontal {
+  width: 100%;
+  height: 20px;
+}
+
 #RGB {
 	height: 20px;
 	background: rgb(128, 128, 128);

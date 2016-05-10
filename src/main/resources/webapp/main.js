@@ -29,6 +29,10 @@ $(document).ready(function() {
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMin = '0.0';
     $('.dynamicsparkline').sparkline.defaults.common.chartRangeMax = '100.0';
 
+    $('#myNavbar a').on('click', function(){
+        $('.navbar-toggle').click()
+    });
+
     $('#controlNav').click(function() {
         $('#controlPage').removeClass('hide');
         $('#statusPage').addClass('hide');
