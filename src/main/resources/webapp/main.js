@@ -78,7 +78,13 @@ $(document).ready(function() {
         var bValue = b.getValue();
         var speedValue = speed.getValue();
         var intensityValue = intensity.getValue();
-        var patternSelect = {"id": patternId, "red": rValue, "green": gValue, "blue": bValue, "speed": speedValue, "intensity": intensityValue};
+        var patternSelect = {"id": patternId,
+                             "red": rValue,
+                             "green": gValue,
+                             "blue": bValue,
+                             "speed": speedValue,
+                             "intensity": intensityValue};
+        updateWellLight();
         $.ajax({
             type: "POST",
             url: '/pattern',
@@ -113,19 +119,38 @@ $(document).ready(function() {
         });
     });
     $('#ledOff').click(function() {
-        $('#ledOn').removeClass('active');
-        $('#ledOff').addClass('active');
         $.ajax({
           url: "/ledPower/off",
           method: "POST",
 		}).success (function (ledResult) {
-		    if (ledResult.result == 1) {
-                $('#ledOff').removeClass('active');
-                $('#ledOn').addClass('active');
+		    if (ledResult.result == 0) {
+                $('#ledOff').addClass('active');
+                $('#ledOn').removeClass('active');
             }
             updateHeartbeat();
         });
     });
+    $('#wellLightOn').click(function() {
+        $('#wellLightOff').removeClass('active');
+        $('#wellLightOn').addClass('active');
+        updateWellLight();
+    }
+    });
+    $('#wellLightOff').click(function() {
+        $('#wellLightOff').addClass('active');
+        $('#wellLightOn').removeClass('active');
+        updateWellLight();
+    });
+    function updateWellLight() {
+        var wellLevel = {"powerOn": $('#wellLightOn').hasClass('active'), "level": wellLightLevel.getValue()};
+        $.ajax({
+            type: "POST",
+            url: '/wellLightLevel',
+            data: JSON.stringify(wellLevel),
+            contentType: "application/json"
+        }).done(function(results) {
+        });
+    };
     $('#logInfo').click(function() {
         $.ajax({
           url: "/logLevel/INFO",
@@ -176,6 +201,9 @@ $(document).ready(function() {
             .on('slideStop', checkSubmit)
             .data('slider');
     var intensity = $('#intensity').slider()
+            .on('slideStop', checkSubmit)
+            .data('slider');
+    var wellLightLevel = $('#wellDimming').slider()
             .on('slideStop', checkSubmit)
             .data('slider');
 
