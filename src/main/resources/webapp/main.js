@@ -134,7 +134,6 @@ $(document).ready(function() {
         $('#wellLightOff').removeClass('active');
         $('#wellLightOn').addClass('active');
         updateWellLight();
-    }
     });
     $('#wellLightOff').click(function() {
         $('#wellLightOff').addClass('active');
