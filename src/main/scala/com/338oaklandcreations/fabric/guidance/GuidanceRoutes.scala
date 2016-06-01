@@ -65,6 +65,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       patternUpdate ~
       versions ~
       logLevel ~
+      setWellLightSettings ~
       wellLightSettings ~
       login
 
@@ -144,8 +145,18 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
     }
   }
 
-  def wellLightSettings = post {
-    path("wellLightSettings") { (level) =>
+  def setWellLightSettings = post {
+    path("wellLightSettings") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def wellLightSettings = get {
+    path("wellLightSettings") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
           forwardRequest(ctx)

@@ -144,7 +144,7 @@ $(document).ready(function() {
         var wellLevel = {"powerOn": $('#wellLightOn').hasClass('active'), "level": wellLightLevel.getValue()};
         $.ajax({
             type: "POST",
-            url: '/wellLightLevel',
+            url: '/wellLightSettings',
             data: JSON.stringify(wellLevel),
             contentType: "application/json"
         }).done(function(results) {
@@ -208,24 +208,40 @@ $(document).ready(function() {
 
     function updateHeartbeat() {
         $.ajax({
-			url: '/heartbeat',
+    			url: '/heartbeat',
+    			cache: false
+    		}).success (function (heartbeat) {
+                $('#pattern').html(heartbeat.patternName);
+                if (heartbeat.patternName != 'Off') {
+                    r.setValue(heartbeat.red);
+                    g.setValue(heartbeat.green);
+                    b.setValue(heartbeat.blue);
+                    speed.setValue(heartbeat.speed);
+                    intensity.setValue(heartbeat.intensity);
+                    $('#ledOff').removeClass('active');
+                    $('#ledOn').addClass('active');
+                } else {
+                    $('#ledOn').removeClass('active');
+                    $('#ledOff').addClass('active');
+                }
+                var timestamp = moment(heartbeat.timestamp);
+                $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+            });
+        };
+
+    function updateWellLightSettings() {
+        $.ajax({
+            url: '/wellLightSettings',
 			cache: false
 		}).success (function (heartbeat) {
-            $('#pattern').html(heartbeat.patternName);
-            if (heartbeat.patternName != 'Off') {
-                r.setValue(heartbeat.red);
-                g.setValue(heartbeat.green);
-                b.setValue(heartbeat.blue);
-                speed.setValue(heartbeat.speed);
-                intensity.setValue(heartbeat.intensity);
-                $('#ledOff').removeClass('active');
-                $('#ledOn').addClass('active');
+            wellLightLevel.setValue(heartbeat.level);
+            if (heartbeat.powerOn == true) {
+                $('#wellLightOn').removeClass('active');
+                $('#wellLightOff').addClass('active');
             } else {
-                $('#ledOn').removeClass('active');
-                $('#ledOff').addClass('active');
+                $('#wellLightOff').removeClass('active');
+                $('#wellLightOn').addClass('active');
             }
-            var timestamp = moment(heartbeat.timestamp);
-            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
         });
     };
 
@@ -264,6 +280,7 @@ $(document).ready(function() {
             $('#serverBuildTime').html(versionTime);
         });
         updateHeartbeat();
+        updateWellLightSettings();
     };
 
     function updateControl() {
@@ -279,6 +296,7 @@ $(document).ready(function() {
             });
         });
         updateHeartbeat();
+        updateWellLightSettings();
     }
 
     updateControl();
