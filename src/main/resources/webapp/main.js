@@ -293,6 +293,9 @@ $(document).ready(function() {
                 $('#patternName').append(
                     '<option value =\"' + name + '\">' + name.split('-')[1]  + '</option>'
                 );
+                if (name.split('-')[1] == $('#pattern').html()) {
+                   $('patternName').val(name.split('-')[1]);
+                }
             });
         });
         updateHeartbeat();
