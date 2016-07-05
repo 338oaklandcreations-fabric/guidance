@@ -212,6 +212,7 @@ $(document).ready(function() {
             cache: false
         }).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
+            $('#patternName').text(heartbeat.patternName);
             if (heartbeat.patternName != 'Off') {
                 r.setValue(heartbeat.red);
                 g.setValue(heartbeat.green);
