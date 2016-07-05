@@ -208,26 +208,26 @@ $(document).ready(function() {
 
     function updateHeartbeat() {
         $.ajax({
-    			url: '/heartbeat',
-    			cache: false
-    		}).success (function (heartbeat) {
-                $('#pattern').html(heartbeat.patternName);
-                if (heartbeat.patternName != 'Off') {
-                    r.setValue(heartbeat.red);
-                    g.setValue(heartbeat.green);
-                    b.setValue(heartbeat.blue);
-                    speed.setValue(heartbeat.speed);
-                    intensity.setValue(heartbeat.intensity);
-                    $('#ledOff').removeClass('active');
-                    $('#ledOn').addClass('active');
-                } else {
-                    $('#ledOn').removeClass('active');
-                    $('#ledOff').addClass('active');
-                }
-                var timestamp = moment(heartbeat.timestamp);
-                $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
-            });
-        };
+            url: '/heartbeat',
+            cache: false
+        }).success (function (heartbeat) {
+            $('#pattern').html(heartbeat.patternName);
+            if (heartbeat.patternName != 'Off') {
+                r.setValue(heartbeat.red);
+                g.setValue(heartbeat.green);
+                b.setValue(heartbeat.blue);
+                speed.setValue(heartbeat.speed);
+                intensity.setValue(heartbeat.intensity);
+                $('#ledOff').removeClass('active');
+                $('#ledOn').addClass('active');
+            } else {
+                $('#ledOn').removeClass('active');
+                $('#ledOff').addClass('active');
+            }
+            var timestamp = moment(heartbeat.timestamp);
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+        });
+    };
 
     function updateWellLightSettings() {
         $.ajax({
@@ -293,8 +293,8 @@ $(document).ready(function() {
                 $('#patternName').append(
                     '<option value =\"' + name + '\">' + name.split('-')[1]  + '</option>'
                 );
-                if (name.split('-')[1] == $('#pattern').html()) {
-                   $('patternName').val(name.split('-')[1]);
+                if (name.split('-')[1] == $('#patternName').text()) {
+                   $('#patternName').val(name.split('-')[1]);
                 }
             });
         });
@@ -302,6 +302,7 @@ $(document).ready(function() {
         updateWellLightSettings();
     }
 
+    wellLightLevel.setValue(0);
     updateControl();
 
 });
