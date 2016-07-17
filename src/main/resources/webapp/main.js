@@ -212,6 +212,7 @@ $(document).ready(function() {
             cache: false
         }).success (function (heartbeat) {
             $('#pattern').html(heartbeat.patternName);
+            $('#patternName').val(heartbeat.currentPattern + "-" + heartbeat.patternName);
             if (heartbeat.patternName != 'Off') {
                 r.setValue(heartbeat.red);
                 g.setValue(heartbeat.green);
@@ -293,9 +294,6 @@ $(document).ready(function() {
                 $('#patternName').append(
                     '<option value =\"' + name + '\">' + name.split('-')[1]  + '</option>'
                 );
-                if (name.split('-')[1] == $('#patternName').text()) {
-                   $('#patternName').val(name.split('-')[1]);
-                }
             });
         });
         updateHeartbeat();
