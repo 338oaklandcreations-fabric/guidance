@@ -236,12 +236,12 @@ $(document).ready(function() {
 			cache: false
 		}).success (function (heartbeat) {
             wellLightLevel.setValue(heartbeat.level);
-            if (heartbeat.powerOn == true) {
+            if (heartbeat.powerOn) {
+                $('#wellLightOn').addClass('active');
+                $('#wellLightOff').removeClass('active');
+            } else {
                 $('#wellLightOn').removeClass('active');
                 $('#wellLightOff').addClass('active');
-            } else {
-                $('#wellLightOff').removeClass('active');
-                $('#wellLightOn').addClass('active');
             }
         });
     };
