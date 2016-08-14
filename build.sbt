@@ -1,9 +1,15 @@
 import AssemblyKeys._
+import scala.util.Properties._
 import com.typesafe.sbt.SbtStartScript
+import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 
 name := "Guidance"
 
-version := "1.0"
+val nextMinorVersion = (Process(Seq("cat", "minorVersion.txt")).!!.replaceAll("\n", "").toInt + 1).toString
+
+version := {
+  "0." + nextMinorVersion
+}
 
 scalaVersion := "2.11.7"
 
@@ -13,7 +19,7 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 resolvers += "Spray" at "http://repo.spray.io"
 
-lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
+lazy val root = (project in file("."))
 
 seq(SbtStartScript.startScriptForClassesSettings: _*)
 
@@ -38,3 +44,21 @@ libraryDependencies ++= {
 }
 
 Revolver.settings
+
+val deployTask = TaskKey[Unit]("deploy", "Copies assembly jar to remote location")
+
+deployTask <<= assembly map { (asm) =>
+  val targetDir = envOrElse("FABRIC_JAR_TARGET_DIR", "")
+  val account = envOrElse("FABRIC_EMBEDDED_SERVER", "")
+  val jarName = asm.getName
+  val src = "./target/scala-2.11/" + jarName
+  val target = targetDir + jarName
+  val target_abs = account + ":" + target
+  Process(Seq("scp", src, target_abs)).!
+  Process(Seq("bash", "-c", "echo " + nextMinorVersion + " > minorVersion.txt")).!
+  // Optional. Create symbolic link to last version
+  val symlink = targetDir + "Guidance-assembly.jar"
+  println("Symlinking it to  " + symlink)
+  val cmd = "ln -sf " + target + " " + symlink
+  Process(Seq("ssh", account, cmd)).!
+}

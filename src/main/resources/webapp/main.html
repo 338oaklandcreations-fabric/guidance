@@ -36,6 +36,27 @@
     <div class="list-group col-sm-4 col-xs-12" id="controlPage">
         <li class="list-group-item" style="border: 0">
             <div class="form-horizontal">
+                <div class="form-group" id="bodyLightsForm">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Body Lights</label>
+                    <div class="col-sm-8 col-xs-6 text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default btn-md active" style="width: 65px;" id="bodyOn">On</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="bodyOff">Off</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="body1">1</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="body2">2</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="poofersForm">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Poofers</label>
+                    <div class="col-sm-8 col-xs-6 text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="poofer1">1</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="poofer2">2</button>
+                            <button type="button" class="btn btn-default btn-md" style="width: 65px;" id="poofer3">3</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Current Pattern</label>
                     <label class="col-sm-8 col-xs-6 control-label" style="text-align: center;" id="pattern"></label>
@@ -124,6 +145,22 @@
         <li class="list-group-item" style="border: 0">
             <div class="form-horizontal">
                 <div class="form-group">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Start Time</label>
+                    <div class="col-sm-8 col-xs-6 text-center">
+                        <div class="btn-group" role="group">
+                            <input type="time" id="illuminationStartTime">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 col-xs-5 control-label" style="text-align: right;">Stop Time</label>
+                    <div class="col-sm-8 col-xs-6 text-center">
+                        <div class="btn-group" role="group">
+                            <input type="time" id="illuminationStopTime">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-4 control-label">CPU</label>
                     <div class="col-sm-8">
                         <span class="dynamicsparkline" id="hostCpuSparkline">Loading...</span>
@@ -193,6 +230,7 @@
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/bootstrap-slider.min.js"></script>
 <script type="text/javascript" src="./main.js"></script>
+<script type="text/javascript" src="./apis.js"></script>
 <script type="text/javascript" src="./js/jquery.sparkline.min.js"></script>
 <script type="text/javascript" src="./js/moment.min.js"></script>
 <script type="text/javascript" src="./js/moment-timezone-with-data.js"></script>

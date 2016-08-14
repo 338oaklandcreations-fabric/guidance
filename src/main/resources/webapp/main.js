@@ -303,4 +303,11 @@ $(document).ready(function() {
     wellLightLevel.setValue(0);
     updateControl();
 
+    if (location.hostname.includes("apis")) {
+        $('#bodyLightsForm').removeClass('hide');
+        $('#poofersForm').removeClass('hide');
+    }
+
+    $('#illuminationStartTime')[0].value = "17:00";
+    $('#illuminationStopTime')[0].value = "5:00";
 });
