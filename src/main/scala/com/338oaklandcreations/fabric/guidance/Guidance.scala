@@ -42,8 +42,8 @@ object Guidance extends App {
 
     val server = system.actorOf(Props[GuidanceServiceActor], "guidanceServiceActor")
 
-    if (args.length > 0) IO(Http) ? Http.Bind(server, "0.0.0.0", args(0).toInt)
-    else IO(Http) ? Http.Bind(server, "0.0.0.0", port.toInt)
+    if (args.length > 0) IO(Http) ? Http.Bind(server, "localhost", args(0).toInt)
+    else IO(Http) ? Http.Bind(server, "localhost", port.toInt)
   }
 
   doMain
