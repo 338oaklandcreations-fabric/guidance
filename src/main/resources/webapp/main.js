@@ -309,5 +309,5 @@ $(document).ready(function() {
     }
 
     $('#illuminationStartTime')[0].value = "17:00";
-    $('#illuminationStopTime')[0].value = "5:00";
+    $('#illuminationStopTime')[0].value = "05:00";
 });
