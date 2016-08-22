@@ -47,12 +47,7 @@ trait UserAuthentication {
 
   val authentications = {
     val userPWD = envOrElse("FABRIC_USER_PASSWORDS", "apis,2016")
-    println(userPWD)
     userPWD.split(":").map(_.split(",")).map({ x => {
-      println(x(0))
-      println(x(1))
-      //logger.info("User " + x(0) + " found")
-      //logger.info("Password " + x(1) + " found")
       (x(0), x(1))
     } }).toMap
   }
@@ -86,12 +81,10 @@ trait UserAuthentication {
             Authenticated(sessionId)
           }
           else {
-            println("reg")
             AuthenticationRejection("Invalid Password")
           }
         }
         else {
-          println("user")
           AuthenticationRejection("Unknown User")
         }
       }

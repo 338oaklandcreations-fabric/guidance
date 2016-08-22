@@ -22,8 +22,8 @@ package com._338oaklandcreations.fabric.guidance
 import akka.actor._
 import akka.pattern.ask
 import org.slf4j.LoggerFactory
+import spray.http.HttpCookie
 import spray.http.MediaTypes._
-import spray.http.{DateTime, HttpCookie}
 import spray.routing._
 
 import scala.util.{Failure, Success}
@@ -79,7 +79,6 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
   def authenticateCookies(sessionId: HttpCookie, username: HttpCookie) = authenticate(authenticateSessionId(sessionId.content, username.content))
 
   val keyLifespanMillis = 120000 * 1000 // 2000 minutes
-  val expiration = DateTime.now + keyLifespanMillis
   val SessionKey = "FABRIC_GUIDANCE_SESSION"
   val UserKey = "FABRIC_GUIDANCE_USER"
   val ResponseTextHeader = "{\"responseText\": "
@@ -251,8 +250,8 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       formFields('inputName, 'inputPassword) { (inputName, inputPassword) =>
         handleRejections(authenticationRejection) {
           authenticate(authenticateUser(inputName, inputPassword)) { authentication =>
-            setCookie(HttpCookie(SessionKey, content = authentication.token, expires = Some(expiration))) {
-              setCookie(HttpCookie(UserKey, content = inputName, expires = Some(expiration))) { ctx =>
+            setCookie(HttpCookie(SessionKey, content = authentication.token)) {
+              setCookie(HttpCookie(UserKey, content = inputName)) { ctx =>
                 ctx.complete("")
               }
             }
