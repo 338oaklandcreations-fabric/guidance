@@ -47,7 +47,10 @@ trait UserAuthentication {
 
   def authentications = {
     val userPWD = envOrElse("FABRIC_USER_PASSWORDS", "apis,2016")
-    userPWD.split(";").map(_.split(",")).map({ x => (x(0), x(1)) }).toMap
+    userPWD.split(";").map(_.split(",")).map({ x => {
+      logger.info("User " + x(0) + " found")
+      (x(0), x(1))
+    } }).toMap
   }
 
   var sessionIds = Map.empty[String, String]
