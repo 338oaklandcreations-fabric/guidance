@@ -45,10 +45,14 @@ trait UserAuthentication {
 
   val logger: Logger
 
-  def authentications = {
+  val authentications = {
     val userPWD = envOrElse("FABRIC_USER_PASSWORDS", "apis,2016")
-    userPWD.split(";").map(_.split(",")).map({ x => {
-      logger.info("User " + x(0) + " found")
+    println(userPWD)
+    userPWD.split(":").map(_.split(",")).map({ x => {
+      println(x(0))
+      println(x(1))
+      //logger.info("User " + x(0) + " found")
+      //logger.info("Password " + x(1) + " found")
       (x(0), x(1))
     } }).toMap
   }
@@ -58,7 +62,7 @@ trait UserAuthentication {
   def authenticateUser(email: String, password: String)(implicit ec: ExecutionContext): ContextAuthenticator[Authenticated] = {
     ctx =>
     {
-      logger.info("Authenticating User:" + email + ", *******")
+      logger.info("Authenticating User: " + email + ", *******")
       doUserAuth(email, password)
     }
   }
@@ -78,10 +82,18 @@ trait UserAuthentication {
           if (authentications(email) == password) {
             val sessionId = java.util.UUID.randomUUID.toString
             sessionIds += (email -> sessionId)
+            println("auth")
             Authenticated(sessionId)
           }
-          else AuthenticationRejection("Invalid Password")
-        } else AuthenticationRejection("Unknown Email")
+          else {
+            println("reg")
+            AuthenticationRejection("Invalid Password")
+          }
+        }
+        else {
+          println("user")
+          AuthenticationRejection("Unknown User")
+        }
       }
       Either.cond(result match {
         case Authenticated(token) => true
@@ -101,7 +113,8 @@ trait UserAuthentication {
             Authenticated(sessionId)
           }
           else AuthenticationRejection("Invalid Login")
-        } else AuthenticationRejection("Unknown Email")
+        }
+        else AuthenticationRejection("Unknown User")
       }
       Either.cond(result match {
         case Authenticated(token) => true

@@ -72,7 +72,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       login
 
   val authenticationRejection = RejectionHandler {
-    case AuthenticationRejection(message) :: _ => getFromResource("webapp/login.html")
+    case AuthenticationRejection(message) :: _ => complete(400, message)
   }
 
   def cookies = cookie("FABRIC_GUIDANCE_SESSION") & cookie("FABRIC_GUIDANCE_USER") & respondWithMediaType(`application/json`)
