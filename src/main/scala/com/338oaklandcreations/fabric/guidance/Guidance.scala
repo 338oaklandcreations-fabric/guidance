@@ -47,7 +47,6 @@ object Guidance extends App {
       if (args.length > 0) IO(Http) ? Http.Bind(server, "0.0.0.0", args(0).toInt)
       else IO(Http) ? Http.Bind(server, "0.0.0.0", port.toInt)
     }
-    println("test")
     Await.result(bindResult, timeout.duration) match {
       case CommandFailed(cmd) => System.exit(1)
       case _ =>
