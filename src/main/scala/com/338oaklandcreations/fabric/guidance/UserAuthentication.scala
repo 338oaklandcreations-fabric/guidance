@@ -46,7 +46,7 @@ trait UserAuthentication {
   val logger: Logger
 
   val authentications = {
-    val userPWD = envOrElse("FABRIC_USER_PASSWORDS", "apis,2016")
+    val userPWD = envOrElse("FABRIC_USER_PASSWORDS", "mauricio,mauricio")
     userPWD.split(":").map(_.split(",")).map({ x => {
       (x(0), x(1))
     } }).toMap
