@@ -60,5 +60,5 @@ deployTask <<= assembly map { (asm) =>
   val symlink = targetDir + "Guidance-assembly.jar"
   println("Symlinking it to  " + symlink)
   val cmd = "ln -sf " + target + " " + symlink
-  Process(Seq("ssh", "-o", "ConnectTimeout=3", account, cmd)).!
+  Process(Seq("ssh", "-o ConnectTimeout=3", account, cmd)).!
 }
