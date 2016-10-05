@@ -308,6 +308,14 @@ $(document).ready(function() {
         $('#poofersForm').removeClass('hide');
     }
 
-    $('#illuminationStartTime')[0].value = "17:00";
-    $('#illuminationStopTime')[0].value = "05:00";
+    $('#illuminationStartTime')[0].value = "16:00";
+    $('#illuminationStopTime')[0].value = "06:00";
+
+    $.ajax({
+        url: '/hostName',
+        cache: false
+    }).success (function (currentHostName) {
+        $('#siteTitle').value = 'Fabric - ' + currentHostName.charAt(0).toUpperCase() + currentHostName.slice(1, currentHostName.length - 1);
+    });
+
 });
