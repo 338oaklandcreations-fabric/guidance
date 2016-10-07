@@ -60,6 +60,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       hostMemory ~
       heartbeat ~
       hostStatistics ~
+      currentHostName ~
       ledPower ~
       patternNames ~
       patternUpdate ~
@@ -128,6 +129,16 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   def hostStatistics = get {
     path("hostStatistics") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def currentHostName = get {
+    path("hostName") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
           forwardRequest(ctx)

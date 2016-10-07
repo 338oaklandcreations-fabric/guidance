@@ -68,7 +68,7 @@ class MachineryAPI extends Actor with ActorLogging {
         engine
     }
 
-  val backendServerPort = scala.util.Properties.envOrElse("FABRIC_MACHINERY_URL_PORT", "8111").toInt
+  val backendServerPort = scala.util.Properties.envOrElse("FABRIC_MACHINERY_URL_PORT", "8110").toInt
   val backendHost = scala.util.Properties.envOrElse("FABRIC_MACHINERY_HOST", "localhost")
   val backendServer = "https://" + backendHost + ":" + backendServerPort
 

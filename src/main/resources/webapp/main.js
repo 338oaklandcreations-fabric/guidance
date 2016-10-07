@@ -182,6 +182,12 @@ $(document).ready(function() {
     });
     var RGBChange = function() {
         $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
+    	$("#redSliderVal").text("Red (" + r.getValue() + ")");
+    	$("#greenSliderVal").text("Green (" + g.getValue() + ")");
+    	$("#blueSliderVal").text("Blue (" + b.getValue() + ")");
+    	$("#speedSliderVal").text("Speed (" + speed.getValue() + ")");
+    	$("#intensitySliderVal").text("Intensity (" + intensity.getValue() + ")");
+    	$("#dimmingSliderVal").text("Dimming (" + wellLightLevel.getValue() + ")");
     };
 
     var r = $('#R').slider()
@@ -197,12 +203,15 @@ $(document).ready(function() {
             .on('slideStop', checkSubmit)
             .data('slider');
     var speed = $('#speed').slider()
+            .on('slide', RGBChange)
             .on('slideStop', checkSubmit)
             .data('slider');
     var intensity = $('#intensity').slider()
+            .on('slide', RGBChange)
             .on('slideStop', checkSubmit)
             .data('slider');
     var wellLightLevel = $('#wellDimming').slider()
+            .on('slide', RGBChange)
             .on('slideStop', checkSubmit)
             .data('slider');
 
@@ -219,6 +228,7 @@ $(document).ready(function() {
                 b.setValue(heartbeat.blue);
                 speed.setValue(heartbeat.speed);
                 intensity.setValue(heartbeat.intensity);
+                RGBChange();
                 $('#ledOff').removeClass('active');
                 $('#ledOn').addClass('active');
             } else {
@@ -300,22 +310,24 @@ $(document).ready(function() {
         updateWellLightSettings();
     }
 
+    function updateHostName() {
+        $.ajax({
+            url: '/hostName',
+            cache: false
+        }).success (function (currentHostName) {
+            if (currentHostName.hostName.includes("apis")) {
+                $('#bodyLightsForm').removeClass('hide');
+                $('#poofersForm').removeClass('hide');
+            }
+            $('#siteTitle').text('Fabric - ' + currentHostName.hostName.charAt(0).toUpperCase() + currentHostName.hostName.slice(1, currentHostName.hostName.length - 1));
+        });
+    }
+
     wellLightLevel.setValue(0);
     updateControl();
-
-    if (location.hostname.includes("apis")) {
-        $('#bodyLightsForm').removeClass('hide');
-        $('#poofersForm').removeClass('hide');
-    }
+    updateHostName();
 
     $('#illuminationStartTime')[0].value = "16:00";
     $('#illuminationStopTime')[0].value = "06:00";
-
-    $.ajax({
-        url: '/hostName',
-        cache: false
-    }).success (function (currentHostName) {
-        $('#siteTitle').value = 'Fabric - ' + currentHostName.charAt(0).toUpperCase() + currentHostName.slice(1, currentHostName.length - 1);
-    });
 
 });
