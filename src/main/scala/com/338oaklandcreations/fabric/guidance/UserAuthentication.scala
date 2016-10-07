@@ -77,7 +77,6 @@ trait UserAuthentication {
           if (authentications(email) == password) {
             val sessionId = java.util.UUID.randomUUID.toString
             sessionIds += (email -> sessionId)
-            println("auth")
             Authenticated(sessionId)
           }
           else {
