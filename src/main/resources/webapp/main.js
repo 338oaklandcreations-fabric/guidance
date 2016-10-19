@@ -319,7 +319,7 @@ $(document).ready(function() {
                 $('#bodyLightsForm').removeClass('hide');
                 $('#poofersForm').removeClass('hide');
             }
-            $('#siteTitle').text('Fabric - ' + currentHostName.hostName.charAt(0).toUpperCase() + currentHostName.hostName.slice(1, currentHostName.hostName.length - 1));
+            $('#siteTitle').text('Fabric - ' + currentHostName.hostName.charAt(0).toUpperCase() + currentHostName.hostName.slice(1, currentHostName.hostName.length));
         });
     }
 
