@@ -47,6 +47,7 @@ $(document).ready(function() {
         $('#controlNav').removeClass('active');
         $('#statusNav').addClass('active');
         updateStatus();
+        updateExternalMessages();
     });
 
     $('#patternName').change(function() {
@@ -236,7 +237,7 @@ $(document).ready(function() {
                 $('#ledOff').addClass('active');
             }
             var timestamp = moment(heartbeat.timestamp);
-            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+            $('#heartbeatTimestamp').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a z'));
         });
     };
 
@@ -256,6 +257,30 @@ $(document).ready(function() {
         });
     };
 
+    function updateExternalMessages() {
+        $.ajax({
+            url: '/externalMessages',
+            cache: false
+        }).done (function (externals) {
+			$('tbody#externalMessages_table_body').empty();
+			$.each(externals.messages, function(key, currentMessage) {
+			    var stripped = currentMessage.payload.replace(/\\"/g, '"')
+                stripped = stripped.slice(1, stripped.length - 1);
+			    if (stripped[0] != '{') stripped = '{' + stripped + '}';
+                var obj = JSON.parse(stripped);
+                var str = JSON.stringify(obj, undefined, 2);
+                var timestamp = moment(currentMessage.timeStamp).tz('America/Los_Angeles').format('YYYY-MM-DD h:mm:ss a z');
+                $('#externalMessages_table_body').append(
+                    '<tr>' +
+                    '<td>' + timestamp + '</td>' +
+                    '<td>' + currentMessage.channel + '</td>' +
+                    '<td><pre>' + str + '</pre></td>' +
+                    '</tr>'
+				);
+            });
+        });
+    };
+
 	function updateStatus() {
 		$.ajax({
 			url: '/hostStatistics',
@@ -264,29 +289,34 @@ $(document).ready(function() {
             $('#hostMemorySparkline.dynamicsparkline').sparkline(statistics.memoryHistory);
             $('#hostCpuSparkline.dynamicsparkline').sparkline(statistics.cpuHistory);
             var timestamp = moment(statistics.startTime);
-            $('#startTime').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a'));
+            $('#startTime').html(timestamp.tz('America/Los_Angeles').format('YYYY-MM-DD h:mm a z'));
             var lumenessenceLogs = "Warn: " + statistics.concerning[0].warn + ", Error: " + statistics.concerning[0].error + ", Fatal: " + statistics.concerning[0].fatal;
             var serverLogs = "Warn: " + statistics.concerning[1].warn + ", Error: " + statistics.concerning[1].error + ", Fatal: " + statistics.concerning[1].fatal;
             var opcLogs = "Warn: " + statistics.concerning[2].warn + ", Error: " + statistics.concerning[2].error + ", Fatal: " + statistics.concerning[2].fatal;
             $('#serverLogs').html(serverLogs);
             $('#ledControllerLogs').html(lumenessenceLogs);
             $('#opcLogs').html(opcLogs);
-		}).error (function (xhr, ajaxOptions, thrownError) {
-            window.location.replace(host);
+		    var startTime = moment.tz(statistics.timing.startup, "UTC").tz("America/Los_Angeles").format('h:mm a z');
+            $('#illuminationStartTime').html(startTime);
+		    var endTime = moment.tz(statistics.timing.shutdown, "UTC").tz("America/Los_Angeles").format('h:mm a z');
+            $('#illuminationStopTime').html(endTime);
         });
 		$.ajax({
 			url: '/version/ledController',
 			cache: false
 		}).success (function (version) {
             $('#ledControllerVersion').html(version.versionId);
-		    var versionTime = moment.tz(version.buildTime, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
-            $('#ledControllerBuildTime').html(versionTime);
+            $('#ledControllerBuildTime').html(version.buildTime);
+            if (version.buildTime != '<Unknown>') {
+                var versionTime = moment.tz(version.buildTime, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a z');
+                $('#ledControllerBuildTime').html(versionTime);
+            }
         });
 		$.ajax({
 			url: '/version/server',
 			cache: false
 		}).success (function (version) {
-		    var versionTime = moment.tz(version.builtAt, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a');
+		    var versionTime = moment.tz(version.builtAt, "UTC").tz("America/Los_Angeles").format('YYYY-MM-DD h:mm a z');
             $('#serverVersion').html(version.version);
             $('#serverBuildTime').html(versionTime);
         });
@@ -327,7 +357,7 @@ $(document).ready(function() {
     updateControl();
     updateHostName();
 
-    $('#illuminationStartTime')[0].value = "16:00";
-    $('#illuminationStopTime')[0].value = "06:00";
+    $('#illuminationStartTime')[0].value = "00:00";
+    $('#illuminationStopTime')[0].value = "00:00";
 
 });

@@ -70,6 +70,7 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       wellLightSettings ~
       bodyLights ~
       poofers ~
+      externalMessages ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -219,6 +220,16 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   def versions = get {
     pathPrefix("version") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def externalMessages = get {
+    pathPrefix("externalMessages") {
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
           forwardRequest(ctx)
