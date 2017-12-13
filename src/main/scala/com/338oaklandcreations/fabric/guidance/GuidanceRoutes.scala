@@ -71,6 +71,8 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
       bodyLights ~
       poofers ~
       externalMessages ~
+      dataLoopback ~
+      shutdownDetect ~
       login
 
   val authenticationRejection = RejectionHandler {
@@ -230,6 +232,26 @@ trait GuidanceRoutes extends HttpService with UserAuthentication {
 
   def externalMessages = get {
     pathPrefix("externalMessages") {
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def dataLoopback = post {
+    pathPrefix("dataLoopback" / """(ON|OFF)""".r) { (onOff) =>
+      cookies { (sessionId, username) =>
+        authenticateCookies(sessionId, username) { authenticated => ctx =>
+          forwardRequest(ctx)
+        }
+      } ~ complete(401, UnauthorizedRequestString)
+    }
+  }
+
+  def shutdownDetect = post {
+    pathPrefix("shutdownDetect" / """(ON|OFF)""".r) { (onOff) =>
       cookies { (sessionId, username) =>
         authenticateCookies(sessionId, username) { authenticated => ctx =>
           forwardRequest(ctx)

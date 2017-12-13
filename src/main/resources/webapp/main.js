@@ -181,6 +181,42 @@ $(document).ready(function() {
             $('#logWarn').addClass('active');
         });
     });
+    $('#dataLoopbackOn').click(function() {
+        $.ajax({
+          url: "/dataLoopback/ON",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#dataLoopbackOn').toggleClass('active');
+            $('#dataLoopbackOff').toggleClass('active');
+        });
+    });
+    $('#dataLoopbackOff').click(function() {
+        $.ajax({
+          url: "/dataLoopback/OFF",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#dataLoopbackOn').toggleClass('active');
+            $('#dataLoopbackOff').toggleClass('active');
+        });
+    });
+    $('#shutdownDetectOn').click(function() {
+        $.ajax({
+          url: "/shutdownDetect/ON",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#shutdownDetectOn').toggleClass('active');
+            $('#shutdownDetectOff').toggleClass('active');
+        });
+    });
+    $('#shutdownDetectOff').click(function() {
+        $.ajax({
+          url: "/shutdownDetect/OFF",
+          method: "POST",
+		}).success (function (loglevelResult) {
+            $('#shutdownDetectOn').toggleClass('active');
+            $('#shutdownDetectOff').toggleClass('active');
+        });
+    });
     var RGBChange = function() {
         $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
     	$("#redSliderVal").text("Red (" + r.getValue() + ")");
@@ -300,6 +336,20 @@ $(document).ready(function() {
             $('#illuminationStartTime').html(startTime);
 		    var endTime = moment.tz(statistics.timing.shutdown, "UTC").tz("America/Los_Angeles").format('h:mm a z');
             $('#illuminationStopTime').html(endTime);
+            if (statistics.dataLoopback) {
+                $('#dataLoopbackOn').addClass('active');
+                $('#dataLoopbackOff').removeClass('active');
+            } else {
+                $('#dataLoopbackOn').removeClass('active');
+                $('#dataLoopbackOff').addClass('active');
+            }
+            if (statistics.shutdownDetect) {
+                $('#shutdownDetectOn').addClass('active');
+                $('#shutdownDetectOff').removeClass('active');
+            } else {
+                $('#shutdownDetectOn').removeClass('active');
+                $('#shutdownDetectOff').addClass('active');
+            }
         });
 		$.ajax({
 			url: '/version/ledController',
